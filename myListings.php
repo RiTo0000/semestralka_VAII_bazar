@@ -12,6 +12,14 @@ if (isset($_GET["delete"])) {
     exit();
 }
 
+
+if (isset($_POST["coments"])) {
+    $_SESSION["user"] = $_POST["userTo"];
+    header("Location: /coments.php");
+    exit();
+}
+
+
 if(isset($_POST["updateAd"])) {
     if (!$storage->updateAd($_POST["idUpdate"], $_POST["nadpisUpdate"], $_POST["popisUpdate"], $_POST["cenaUpdate"])) {
         ?>
@@ -44,34 +52,8 @@ if(isset($_POST["updateAd"])) {
     <title>Moje inzeráty</title>
 </head>
 <body>
-<nav class="navbar navbar-expand-lg navbar-light ">
-    <div class="container-fluid">
-        <a class="navbar-brand" href="index.php">Bazar</a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse " id="navbarNav">
-            <ul class="navbar-nav ">
-                <li class="nav-item">
-                    <a class="nav-link" href="addNew.php">Pridať inzerát</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link active" href="myListings.php">Moje inzeráty</a>
-                </li>
-                <?php  if (Auth::isLogged()) { ?>
-                    <li class="nav-item">
-                        <a class="nav-link" aria-current="page" href="login.php"><?php echo Auth::getName()?></a>
-                    </li>
-                <?php  } else {?>
-                    <li class="nav-item">
-                        <a class="nav-link" aria-current="page" href="login.php">Prihlásenie</a>
-                    </li>
-                <?php }?>
-            </ul>
-        </div>
-    </div>
-</nav>
 
+<?php include 'menu.php'?>
 
 
 <?php if (!Auth::isLogged()) {?>
@@ -117,70 +99,7 @@ if(isset($_POST["updateAd"])) {
 
     <b><p id="noListings">Ľutujeme, žiadne inzeráty na zobrazenie</p></b>
 
-    <div class="model" id="model">
-        <div class="model-header">
-            <div class="title" id="title"></div>
-            <button data-close-button class="close-button">&times;</button>
-        </div>
-        <div class="model-body">
-            <b><div id="kategoria"></div></b>
-            <!--zaciatok obrazkovej galerie-->
-            <div class="container" id="imageGalery">
-
-                <!-- velke obrazky -->
-                <div class="mySlides">
-                    <img class="image1" src="" style="width:100%">
-                </div>
-
-                <div class="mySlides">
-                    <img class="image2" src="" style="width:100%">
-                </div>
-
-                <div class="mySlides">
-                    <img class="image3" src="" style="width:100%">
-                </div>
-
-                <div class="mySlides">
-                    <img class="image4" src="" style="width:100%">
-                </div>
-
-                <div class="mySlides">
-                    <img class="image5" src="" style="width:100%">
-                </div>
-
-
-                <!-- tlacidla dalsi a predchadzajuci -->
-                <a class="prev arrow" onclick="plusSlides(-1)">&#10094;</a>
-                <a class="next arrow" onclick="plusSlides(1)">&#10095;</a>
-
-
-                <!-- male obrazky -->
-                <div class="row">
-                    <div class="column">
-                        <img class="demo cursor image1" src="" style="width:100%" onclick="currentSlide(1)">
-                    </div>
-                    <div class="column">
-                        <img class="demo cursor image2" src="" style="width:100%" onclick="currentSlide(2)">
-                    </div>
-                    <div class="column">
-                        <img class="demo cursor image3" src="" style="width:100%" onclick="currentSlide(3)">
-                    </div>
-                    <div class="column">
-                        <img class="demo cursor image4" src="" style="width:100%" onclick="currentSlide(4)">
-                    </div>
-                    <div class="column">
-                        <img class="demo cursor image5" src="" style="width:100%" onclick="currentSlide(5)">
-                    </div>
-                </div>
-            </div>
-            <!--koniec obrazkovej galerie-->
-            <br>
-            <div id="popis"></div>
-            <br>
-            <div id="price"></div>
-            <div>Kontaktný email: <a id="usrEmail" href=""></a></div>
-        </div>
-    </div>
+    <?php include 'detail.php'?>
     <!--zaciatok upravy-->
     <div class="model" id="model2">
         <div class="model-header">
