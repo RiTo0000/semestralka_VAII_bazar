@@ -178,7 +178,12 @@ class DBStorage
         $stmt->bindParam( 1, $inzeratId);
         $stmt->execute();
 
-        return $stmt->fetch();
+        $res = $stmt->fetch();
+
+        if ($res != null){
+            return $res["imgPath"];
+        }
+        return null;
 
 //        $sql = "SELECT * FROM images where inzerat_id = '".$inzeratId."'";
 //

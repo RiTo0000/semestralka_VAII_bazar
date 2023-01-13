@@ -62,7 +62,7 @@ if (isset($_POST["coments"])) {
             }
         </style>
         <tr class="tableRows">
-            <td><img class="imagePrew" src="<?php echo $storage->readFirstImage($row["id"])["imgPath"];?>" ></td>
+            <td><img class="imagePrew" src="<?php echo $storage->readFirstImage($row["id"]);?>" ></td>
 
             <?php include "gallery.php"; ?>
 
