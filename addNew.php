@@ -105,7 +105,8 @@ if(isset($_POST["addNewAd"])) {
     <?php
     }
     else {
-    if (!$storage->createAd($_POST["email"], $_POST["nadpis"], $_POST["popis"], $_POST["kategoria"], $_POST["cena"], $fileCount)) {
+      $createdAd = $storage->createAd($_POST["email"], $_POST["nadpis"], $_POST["popis"], $_POST["kategoria"], $_POST["cena"], $fileCount);
+    if (!$createdAd) {
     ?>
         <script>
             showAlert("Uzivatel so zadanou emailovou adresou neexistuje");
@@ -129,7 +130,7 @@ if(isset($_POST["addNewAd"])) {
 
             move_uploaded_file($myFile["tmp_name"][$i],$dst);  // move image into the {all_images} folder with 32 characters hex number and image name
 
-            $check = $storage->insertImage($dst_db);  // executing insert query
+            $check = $storage->insertImage($createdAd, $dst_db);  // executing insert query
         }
     }
 

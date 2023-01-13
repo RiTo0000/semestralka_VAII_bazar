@@ -83,7 +83,7 @@ if(isset($_POST["updateAd"])) {
                 }
             </style>
             <tr class="tableRows">
-                <td><img class="imagePrew" src="<?php echo $storage->readImage($row["id"]);?>" ></td>
+                <td><img class="imagePrew" src="<?php echo $storage->readFirstImage($row["id"])["imgPath"];?>" ></td>
 
                 <?php include 'gallery.php'?>
 

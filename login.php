@@ -45,6 +45,8 @@ if (isset($_POST["deleteUser"])) {
 
 ?>
 
+<?php include 'menu.php'?>
+
 <?php if (!Auth::isLogged()) {?>
     <div id="loginAndRegistration" class="row row-cols-1 row-cols-sm-1 row-cols-md-2">
         <div id="loginForm" class="col">
@@ -97,30 +99,32 @@ if (isset($_POST["deleteUser"])) {
         <input id="btnLogout" type="submit" name="logout" class="btn btn-primary" value="Odhlásiť">
     </form>
 <?php  }?>
-<?php if (Auth::isLogged()) {?>
+<?php if (Auth::isLogged()) {
+    $logonUser = $storage->readUserInfo($_SESSION["name"]);
+    ?>
     <form method="post" action="#" id="updateInfoForm">
         <div class="row mb-3">
             <label for="inputName" class="col-sm-2 col-form-label">Meno</label>
             <div class="col-sm-10">
-                <input type="text" class="form-control" id="inputName" name="meno" required="required" value="<?php echo $storage->readFromTable($_SESSION["name"], "meno")?>">
+                <input type="text" class="form-control" id="inputName" name="meno" required="required" value="<?php echo $logonUser["meno"]?>">
             </div>
         </div>
         <div class="row mb-3">
             <label for="inputSurname" class="col-sm-2 col-form-label">Priezvisko</label>
             <div class="col-sm-10">
-                <input type="text" class="form-control" id="inputSurname" name="priezvisko" required="required" value="<?php echo $storage->readFromTable($_SESSION["name"], "priezvisko")?>">
+                <input type="text" class="form-control" id="inputSurname" name="priezvisko" required="required" value="<?php echo $logonUser["priezvisko"]?>">
             </div>
         </div>
         <div class="row mb-3">
             <label for="inputEmail3" class="col-sm-2 col-form-label">Email</label>
             <div class="col-sm-10">
-                <input type="email" class="form-control" id="inputEmail3" name="email" required="required" readonly value="<?php echo $storage->readFromTable($_SESSION["name"], "email")?>">
+                <input type="email" class="form-control" id="inputEmail3" name="email" required="required" readonly value="<?php echo $logonUser["email"]?>">
             </div>
         </div>
         <div class="row mb-3">
             <label for="inputPassword3" class="col-sm-2 col-form-label">Password</label>
             <div class="col-sm-10">
-                <input type="password" class="form-control" id="inputPassword3" name="password" required="required" value="<?php echo $storage->readFromTable($_SESSION["name"], "password")?>">
+                <input type="password" class="form-control" id="inputPassword3" name="password" required="required" value="<?php echo $logonUser["password"]?>">
             </div>
         </div>
         <button type="submit" id="btnUpdateInfo" class="btn btn-primary" name="updateUserInfo">Aktualizovat</button>

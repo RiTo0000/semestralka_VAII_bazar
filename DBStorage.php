@@ -21,19 +21,15 @@ class DBStorage
     }
 
     public function findUser($email, $pPassword) {
-        $sql = "SELECT * FROM users where email = '".$email."'";
+        $stmt = $this->conn->prepare("SELECT * FROM users where email=?");
+        $stmt->bindParam(1, $email);
+        $stmt->execute();
 
-        $res = $this->conn->query($sql);
-        $res->fetchAll();
-        $res->execute();
-
-
-        $rows = $res->fetchAll();
-        if ( $rows == null)
+        $row = $stmt->fetch();
+        if ( $row == null)
         {
             return false;
         }
-        $row = $rows[0];
         $salt = $row["salt"];
         $password = $this->hashPassword($salt, $pPassword);
         if (strcmp($password, $row["password"]) == 0) {
@@ -51,42 +47,30 @@ class DBStorage
     }
 
     public function updateUserInfo($origEmail, $email, $pPassword, $name, $surname) {
-        $sql = "SELECT * FROM users where email = '".$origEmail."'";
+        $stmt = $this->conn->prepare("SELECT * FROM users where email=?");
+        $stmt->bindParam(1, $origEmail);
+        $stmt->execute();
 
-        $res = $this->conn->query($sql);
-        $res->fetchAll();
-        $res->execute();
-
-        $row = $res->fetchAll()[0];
+        $row = $stmt->fetch();
         $password = $pPassword;
         if (strcmp($pPassword, $row["password"]) != 0) {
             $salt = $row["salt"];
             $password = $this->hashPassword($salt, $pPassword);
         }
 
-
-        $sql = "UPDATE users SET email = '".$email."', password = '".$password."', meno = '".$name."', priezvisko = '".$surname."' where email = '".$origEmail."'";
-
-        $res = $this->conn->prepare($sql);
-        $res->execute();
-        $_SESSION["name"] = $email;
-
-        $sql = "UPDATE inzeraty SET userEmail = '".$email."' where userEmail = '".$origEmail."'";
-        $res = $this->conn->prepare($sql);
-        $res->execute();
+        $stmt2 = $this->conn->prepare("UPDATE users SET meno = :name, priezvisko = :surname where email = :origEmail");
+        $stmt2->bindParam(':name', $name);
+        $stmt2->bindParam(':surname', $surname);
+        $stmt2->bindParam(':origEmail', $origEmail);
+        $stmt2->execute();
     }
 
-    public function readFromTable($email, $columName) {
-        $sql = "SELECT * FROM users where email = '".$email."'";
+    public function readUserInfo($email) {
+        $stmt = $this->conn->prepare("SELECT * FROM users where email=?");
+        $stmt->bindParam(1, $email);
+        $stmt->execute();
 
-        $res = $this->conn->query($sql);
-        $res->fetchAll();
-        $res->execute();
-
-        foreach ($res as $user) {
-            return $user[$columName];
-        }
-
+        return $stmt->fetch();
     }
 
     public function deleteUser($email) {
@@ -101,102 +85,110 @@ class DBStorage
         foreach ($this->readAllComents("userFrom", $email) as $row) {
             $this->deleteComent($row["id"]);
         }
-        $sql = "DELETE FROM users where email = '".$email."'";
-        $res = $this->conn->prepare($sql);
-        $res->execute();
+
+        $stmt = $this->conn->prepare("DELETE FROM users where email =?");
+        $stmt->bindParam(1, $email);
+        $stmt->execute();
+
     }
 
     public function createUser($email, $password, $name, $surname, $salt) {
-        $sql = "SELECT * FROM users where email = '".$email."'";
+        $user = $this->readUserInfo($email);
 
-        $res = $this->conn->query($sql);
-        $res->fetchAll();
-        $res->execute();
-
-        foreach($res as $row) {
+        if ($user != null) {
             return false;
         }
 
-        $sql = "INSERT INTO users VALUES('".$email."', '".$password."', '".$name."', '".$surname."', '".$salt."')";
+        $stmt = $this->conn->prepare("INSERT INTO users VALUES(:email, :pswd, :name, :surname, :salt)");
+        $stmt->bindParam(":email", $email);
+        $stmt->bindParam(":pswd", $password);
+        $stmt->bindParam(":name", $name);
+        $stmt->bindParam(":surname", $surname);
+        $stmt->bindParam(":salt", $salt);
+        $stmt->execute();
 
-        $res = $this->conn->prepare($sql);
-        $res->execute();
         return true;
     }
 
     public function createAd($email, $title, $popis, $kategoria, $cena, $pocetFoto) {
-        $sql = "SELECT * FROM users where email = '".$email."'";
+        $user = $this->readUserInfo($email);
 
-        $res = $this->conn->query($sql);
-        $res->fetchAll();
-        $res->execute();
-        $count = 0;
-        foreach($res as $row) {
-            $count = 1;
-        }
-
-        if ($count == 1) {
-            $sql = "INSERT INTO inzeraty VALUES(NULL , '".$title. "', '" . $popis. "', '" . $kategoria. "', '" . $cena. "', '" . $email. "', '" . $pocetFoto. "')";
-            $res = $this->conn->prepare($sql);
-            $res->execute();
-            return true;
-        }
-        else {
+        if ($user == null) {
             return false;
         }
+        else{
+            $stmt = $this->conn->prepare("INSERT INTO inzeraty VALUES(NULL , :title, :popis, :kategoria, :cena, :email, :pocetFoto)");
+            $stmt->bindParam(":title", $title);
+            $stmt->bindParam(":popis", $popis);
+            $stmt->bindParam(":kategoria", $kategoria);
+            $stmt->bindParam(":cena", $cena);
+            $stmt->bindParam(":email", $email);
+            $stmt->bindParam(":pocetFoto", $pocetFoto);
+            $stmt->execute();
+
+            return $this->conn->lastInsertId();
+        }
+
     }
 
     public function readAllAds($colName, $colValue) {
-        $sql = "SELECT * FROM inzeraty where $colName = '".$colValue."'";
-        $res = $this->conn->query($sql);
-        $res->fetchAll();
-        $res->execute();
+        $stmt = $this->conn->prepare("SELECT * FROM inzeraty where $colName=?");
+        $stmt->bindParam(1, $colValue);
+        $stmt->execute();
 
-        return $res;
+        return $stmt;
+    }
+
+    public function readAd($id) {
+        $stmt = $this->conn->prepare("SELECT * FROM inzeraty where id=?");
+        $stmt->bindParam(1, $id);
+        $stmt->execute();
+
+        return $stmt->fetch();
     }
 
     public function deleteAd($id) {
-        $sql = "SELECT * FROM inzeraty where id = '".$id."'";
+        $this->deleteImages($id); //vymazanie obrazkov pre dany inzerat ak nejake su
 
-        $res = $this->conn->prepare($sql);
-        $res->execute();
-
-        foreach ($res as $img) {
-            $this->deleteImages($img["id"]);
-        }
-
-        $sql = "DELETE FROM inzeraty where id = '".$id."'";
-
-        $res = $this->conn->prepare($sql);
-        $res->execute();
+        $stmt = $this->conn->prepare("DELETE FROM inzeraty where id = ?");
+        $stmt->bindParam(1, $id);
+        $stmt->execute();
 
     }
 
     public function updateAd($id, $title, $popis, $cena) {
-        $sql = "UPDATE inzeraty SET title = '".$title."', popis = '".$popis."', cena = '".$cena."' where id = '".$id."'";
-
-        $res = $this->conn->prepare($sql);
-        $res->execute();
+        $stmt = $this->conn->prepare("UPDATE inzeraty SET title = :title, popis = :popis, cena = :cena where id = :id");
+        $stmt->bindParam(":title", $title);
+        $stmt->bindParam(":popis", $popis);
+        $stmt->bindParam(":cena", $cena);
+        $stmt->bindParam(":id", $id);
+        return $stmt->execute();
 
     }
 
-    public function insertImage($path) {
-        $sql = "INSERT INTO images VALUES(NULL, (SELECT MAX(id) FROM inzeraty),'".$path."')";
-
-        $res = $this->conn->prepare($sql);
-        $res->execute();
+    public function insertImage($inzerat_ID, $path) {
+        $stmt = $this->conn->prepare("INSERT INTO images VALUES(NULL, :inzeratID, :path)");
+        $stmt->bindParam( ":inzeratID", $inzerat_ID);
+        $stmt->bindParam(":path", $path);
+        $stmt->execute();
     }
 
-    public function readImage($inzeratId) {
-        $sql = "SELECT * FROM images where inzerat_id = '".$inzeratId."'";
+    public function readFirstImage($inzeratId) {
+        $stmt = $this->conn->prepare("SELECT * FROM images where inzerat_id = ? limit 1");
+        $stmt->bindParam( 1, $inzeratId);
+        $stmt->execute();
 
-        $res = $this->conn->query($sql);
-        $res->fetchAll();
-        $res->execute();
+        return $stmt->fetch();
 
-        foreach ($res as $img) {
-            return $img["imgPath"];
-        }
+//        $sql = "SELECT * FROM images where inzerat_id = '".$inzeratId."'";
+//
+//        $res = $this->conn->query($sql);
+//        $res->fetchAll();
+//        $res->execute();
+//
+//        foreach ($res as $img) {
+//            return $img["imgPath"];
+//        }
     }
 
     public function readAllImages($inzeratId) {
