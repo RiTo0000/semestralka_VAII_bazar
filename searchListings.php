@@ -64,7 +64,7 @@ if (isset($_POST["coments"])) {
         <tr class="tableRows">
             <td><img class="imagePrew" src="<?php echo $storage->readFirstImage($row["id"]);?>" ></td>
 
-            <?php include "gallery.php"; ?>
+            <td class="popisInOutput"><div><b><a data-modal-target="#model" onclick="setModal('<?php echo $row["id"]?>')"><?php echo $row["title"]?></a></b></div>
 
             <div><?php echo $row["popis"]?></div></td>
             <td class="priceInOutput"><?php echo $row["cena"]?> €</td>

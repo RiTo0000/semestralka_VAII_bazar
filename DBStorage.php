@@ -184,42 +184,28 @@ class DBStorage
             return $res["imgPath"];
         }
         return null;
-
-//        $sql = "SELECT * FROM images where inzerat_id = '".$inzeratId."'";
-//
-//        $res = $this->conn->query($sql);
-//        $res->fetchAll();
-//        $res->execute();
-//
-//        foreach ($res as $img) {
-//            return $img["imgPath"];
-//        }
     }
 
     public function readAllImages($inzeratId) {
-        $sql = "SELECT * FROM images where inzerat_id = '".$inzeratId."'";
+        $stmt = $this->conn->prepare("SELECT * FROM images where inzerat_id = ?");
+        $stmt->bindParam( 1, $inzeratId);
+        $stmt->execute();
 
-        $res = $this->conn->query($sql);
-        $res->fetchAll();
-        $res->execute();
-
-        return $res;
+        return $stmt->fetchAll();
     }
 
     public function deleteImages($inzeratId) {
-        $sql = "SELECT * FROM images where inzerat_id = '".$inzeratId."'";
+        $images = $this->readAllImages($inzeratId);
 
-        $res = $this->conn->prepare($sql);
-        $res->execute();
+        if ($images != null) {
+            foreach ($images as $img) {
+                unlink($img["imgPath"]);
+            }
 
-        foreach ($res as $img) {
-            unlink($img["imgPath"]);
+            $stmt = $this->conn->prepare("DELETE FROM images where inzerat_id = ?");
+            $stmt->bindParam( 1, $inzeratId);
+            $stmt->execute();
         }
-
-        $sql = "DELETE FROM images where inzerat_id = '".$inzeratId."'";
-
-        $res = $this->conn->prepare($sql);
-        $res->execute();
 
     }
 

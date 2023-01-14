@@ -44,36 +44,59 @@ function closeModal(modal) {
 }
 
 
-function setModal(title, category, popis, userEmail, price, numImages, image1, image2, image3, image4, image5) {
-    setSlides(numImages);
-    document.getElementById("title").innerHTML = title;
-    document.getElementById("kategoria").innerHTML = category;
-    document.getElementById("imageGalery").style.display = "none";
-    if (numImages > 0) {
-        document.getElementById("imageGalery").style.display = "block";
-        document.getElementsByClassName("image1")[0].src = image1;
-        document.getElementsByClassName("image1")[1].src = image1;
-        document.getElementsByClassName("image2")[0].src = image2;
-        document.getElementsByClassName("image2")[1].src = image2;
-        document.getElementsByClassName("image3")[0].src = image3;
-        document.getElementsByClassName("image3")[1].src = image3;
-        document.getElementsByClassName("image4")[0].src = image4;
-        document.getElementsByClassName("image4")[1].src = image4;
-        document.getElementsByClassName("image5")[0].src = image5;
-        document.getElementsByClassName("image5")[1].src = image5;
+function setModal(id) {
+    const xhttpAd = new XMLHttpRequest();
+    xhttpAd.onload = function() {
+        var test = this.response;
+        var ad = JSON.parse(test);
+        setSlides(ad["pocetObrazkov"]);
+        document.getElementById("title").innerHTML = ad["title"];
+        document.getElementById("kategoria").innerHTML = ad["kategoria"];
+        document.getElementById("imageGalery").style.display = "none";
+        if (numImages > 0) {
+            document.getElementById("imageGalery").style.display = "block";
+        }
+        document.getElementById("popis").innerHTML = ad["popis"];
+        document.getElementById("usrEmail").innerHTML = ad["userEmail"];
+        document.getElementById("usrEmail").href = "mailto:" + ad["userEmail"];
+        document.getElementById("noVisible").value = ad["userEmail"];
+        document.getElementById("price").innerHTML = "Cena: " + ad["cena"];
     }
-    document.getElementById("popis").innerHTML = popis;
-    document.getElementById("usrEmail").innerHTML = userEmail;
-    document.getElementById("usrEmail").href = "mailto:" + userEmail;
-    document.getElementById("noVisible").value = userEmail;
-    document.getElementById("price").innerHTML = "Cena: " + price;
+    xhttpAd.open("GET", "AjaxController.php?action=readAd&id="+id);
+    xhttpAd.send();
+
+    const xhttpImages = new XMLHttpRequest();
+    xhttpImages.onload = function() {
+        var test = this.response;
+        var images = JSON.parse(test);
+        for (let imagesKey in images) {
+            let classNum = parseInt(imagesKey)+1;
+            document.getElementsByClassName("image"+classNum)[0].src = images[imagesKey]["imgPath"];
+            document.getElementsByClassName("image"+classNum)[1].src = images[imagesKey]["imgPath"];
+        }
+    }
+    xhttpImages.open("GET", "AjaxController.php?action=readAllImages&id="+id);
+    xhttpImages.send();
 }
-function edit(id, title, popis, price) {
-    document.getElementById("idUpdate").setAttribute('value', parseInt(id));
-    document.getElementById("titleUpdate").innerHTML = "Uprava inzeratu: " + title;
-    document.getElementById("nadpisUpdate").setAttribute('value', title);
-    document.getElementById("popisUpdate").innerHTML = popis;
-    document.getElementById("cenaUpdate").setAttribute('value', parseFloat(price));
+function edit(id) {
+    const xhttpAd = new XMLHttpRequest();
+    xhttpAd.onload = function() {
+        var test = this.response;
+        var ad = JSON.parse(test);
+        document.getElementById("idUpdate").setAttribute('value', ad["id"]);
+        document.getElementById("titleUpdate").innerHTML = "Uprava inzeratu: " + ad["title"];
+        document.getElementById("nadpisUpdate").setAttribute('value', ad["title"]);
+        document.getElementById("popisUpdate").innerHTML = ad["popis"];
+        document.getElementById("cenaUpdate").setAttribute('value', ad["cena"]);
+    }
+    xhttpAd.open("GET", "AjaxController.php?action=readAd&id="+id);
+    xhttpAd.send();
+
+    // document.getElementById("idUpdate").setAttribute('value', parseInt(id));
+    // document.getElementById("titleUpdate").innerHTML = "Uprava inzeratu: " + title;
+    // document.getElementById("nadpisUpdate").setAttribute('value', title);
+    // document.getElementById("popisUpdate").innerHTML = popis;
+    // document.getElementById("cenaUpdate").setAttribute('value', parseFloat(price));
 }
 
 //obrazkova galeria

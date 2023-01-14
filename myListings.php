@@ -84,12 +84,10 @@ if(isset($_POST["updateAd"])) {
             </style>
             <tr class="tableRows">
                 <td><img class="imagePrew" src="<?php echo $storage->readFirstImage($row["id"]);?>" ></td>
-
-                <?php include 'gallery.php'?>
-
+                <td class="popisInOutput"><div><b><a data-modal-target="#model" onclick="setModal('<?php echo $row["id"]?>')"><?php echo $row["title"]?></a></b></div>
                 <div><?php echo $row["popis"]?></div></td>
                 <td class="priceInOutput"><?php echo $row["cena"]?> €</td>
-                <td class="trashInOutput"><a data-modal-target="#model2" onclick="edit('<?php echo $row["id"]?>', '<?php echo $row["title"]?>', '<?php echo $row["popis"]?>', '<?php echo $row["cena"]?>')"><i class="fas fa-edit"></i></a></td>
+                <td class="trashInOutput"><a data-modal-target="#model2" onclick="edit('<?php echo $row["id"]?>')"><i class="fas fa-edit"></i></a></td>
                 <td class="trashInOutput"><a href="?delete=<?php echo $row["id"] ?>"><i class="fas fa-trash trashAd"></i></a></td>
             </tr>
         <?php }?>
