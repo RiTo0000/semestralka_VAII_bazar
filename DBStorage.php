@@ -210,25 +210,25 @@ class DBStorage
     }
 
     public function createComent($userFrom, $userTo, $text) {
-        $sql = "INSERT INTO coments VALUES(NULL , '".$userFrom. "', '" . $userTo. "', '" . $text. "')";
-        $res = $this->conn->prepare($sql);
-        $res->execute();
+        $stmt = $this->conn->prepare("INSERT INTO coments VALUES(NULL , :userFrom, :userTo, :text)");
+        $stmt->bindParam( ":userFrom", $userFrom);
+        $stmt->bindParam( ":userTo", $userTo);
+        $stmt->bindParam( ":text", $text);
+        $stmt->execute();
     }
 
     public function readAllComents($colName, $colValue) {
-        $sql = "SELECT * FROM coments where $colName = '".$colValue."'";
-        $res = $this->conn->query($sql);
-        $res->fetchAll();
-        $res->execute();
+        $stmt = $this->conn->prepare("SELECT * FROM coments where $colName = ?");
+        $stmt->bindParam( 1, $colValue);
+        $stmt->execute();
 
-        return $res;
+        return $stmt->fetchAll();
     }
 
     public function deleteComent($id) {
-        $sql = "DELETE FROM coments where id = '".$id."'";
-
-        $res = $this->conn->prepare($sql);
-        $res->execute();
+        $stmt = $this->conn->prepare("DELETE FROM coments where id = ?");
+        $stmt->bindParam( 1, $id);
+        $stmt->execute();
 
     }
 }
