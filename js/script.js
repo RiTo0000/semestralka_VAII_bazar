@@ -45,10 +45,11 @@ function closeModal(modal) {
 
 
 function setModal(id) {
+
     const xhttpAd = new XMLHttpRequest();
     xhttpAd.onload = function() {
-        var test = this.response;
-        var ad = JSON.parse(test);
+        let response = this.response;
+        let ad = JSON.parse(response);
         setSlides(ad["pocetObrazkov"]);
         document.getElementById("title").innerHTML = ad["title"];
         document.getElementById("kategoria").innerHTML = ad["kategoria"];
@@ -67,8 +68,8 @@ function setModal(id) {
 
     const xhttpImages = new XMLHttpRequest();
     xhttpImages.onload = function() {
-        var test = this.response;
-        var images = JSON.parse(test);
+        let response = this.response;
+        let images = JSON.parse(response);
         for (let imagesKey in images) {
             let classNum = parseInt(imagesKey)+1;
             document.getElementsByClassName("image"+classNum)[0].src = images[imagesKey]["imgPath"];
@@ -81,8 +82,8 @@ function setModal(id) {
 function edit(id) {
     const xhttpAd = new XMLHttpRequest();
     xhttpAd.onload = function() {
-        var test = this.response;
-        var ad = JSON.parse(test);
+        let response = this.response;
+        let ad = JSON.parse(response);
         document.getElementById("idUpdate").setAttribute('value', ad["id"]);
         document.getElementById("titleUpdate").innerHTML = "Uprava inzeratu: " + ad["title"];
         document.getElementById("nadpisUpdate").setAttribute('value', ad["title"]);
@@ -91,20 +92,14 @@ function edit(id) {
     }
     xhttpAd.open("GET", "AjaxController.php?action=readAd&id="+id);
     xhttpAd.send();
-
-    // document.getElementById("idUpdate").setAttribute('value', parseInt(id));
-    // document.getElementById("titleUpdate").innerHTML = "Uprava inzeratu: " + title;
-    // document.getElementById("nadpisUpdate").setAttribute('value', title);
-    // document.getElementById("popisUpdate").innerHTML = popis;
-    // document.getElementById("cenaUpdate").setAttribute('value', parseFloat(price));
 }
 
 //obrazkova galeria
 var slideIndex = 1;
 var numImages = 0;
 function setSlides(pNumImages) {
-    var i;
-    var dots = document.getElementsByClassName("demo");
+    let i;
+    let dots = document.getElementsByClassName("demo");
     slideIndex = 1;
     numImages = pNumImages;
     if (numImages < 2) {
@@ -133,9 +128,9 @@ function currentSlide(n) {
 }
 
 function showSlides(n) {
-    var i;
-    var slides = document.getElementsByClassName("mySlides");
-    var dots = document.getElementsByClassName("demo");
+    let i;
+    let slides = document.getElementsByClassName("mySlides");
+    let dots = document.getElementsByClassName("demo");
     if (n > numImages) {slideIndex = 1}
     if (n < 1) {slideIndex = parseInt(numImages)}
     for (i = 0; i < slides.length; i++) {
@@ -149,12 +144,12 @@ function showSlides(n) {
 }
 
 function filter() {
-    var tableRows = document.getElementsByClassName("tableRows");
-    var input;
-    var str1;
-    var str2;
-    var search;
-    var count = 0;
+    let tableRows = document.getElementsByClassName("tableRows");
+    let input;
+    let str1;
+    let str2;
+    let search;
+    let count = 0;
     for (let i = 0; i < tableRows.length; i++) {
         input = tableRows[i].cells.item(1).innerHTML;
         str1 = input.substring(input.indexOf("('")+2, input.indexOf("',"));
@@ -184,7 +179,7 @@ function filter() {
 }
 
 function filterPrice(pPrice) { //return true ked ma byt zobrazeny a false ak ma byt schovany
-    var price;
+    let price;
     price = pPrice.substring(0, pPrice.indexOf("€"));
 
     if (document.getElementById("priceFrom").value.trim().length === 0 && document.getElementById("priceTo").value.trim().length === 0) {
@@ -214,6 +209,58 @@ function filterPrice(pPrice) { //return true ked ma byt zobrazeny a false ak ma 
             return false;
         }
     }
+}
+
+//pagination
+var pageNumber;
+var totalPages;
+
+function goToPage(pageNum) {
+    if (pageNum != pageNumber) {
+        pageNumber = pageNum;
+        for (let x = 1; x <= totalPages; x++){
+            document.getElementById("page"+x).classList.remove("active");
+        }
+        document.getElementById("page"+pageNumber).classList.add("active");
+        if (pageNum == 1){
+            document.getElementById("prev").classList.add("disabled");
+        }
+        else {
+            document.getElementById("prev").classList.remove("disabled");
+        }
+        if (pageNum == totalPages){
+            document.getElementById("next").classList.add("disabled");
+        }
+        else {
+            document.getElementById("next").classList.remove("disabled");
+        }
+        const xhttpAds = new XMLHttpRequest();
+        xhttpAds.onload = function() {
+            let listingsTable = this.response;
+
+            document.getElementById("listings").innerHTML = listingsTable;
+
+            const openModalButtons = document.querySelectorAll('[data-modal-target]')
+
+            openModalButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const modal = document.querySelector(button.dataset.modalTarget)
+                    openModal(modal)
+                })
+            })
+        }
+        xhttpAds.open("GET", "listings.php?pageNum="+pageNum);
+        xhttpAds.send();
+    }
+}
+
+function plusPages(plusNum) {
+    let newPageNum = pageNumber + plusNum;
+    goToPage(newPageNum);
+}
+
+function initPages(pages) {
+    totalPages = pages;
 }
 
 

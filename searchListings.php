@@ -54,31 +54,40 @@ if (isset($_POST["coments"])) {
         <th scope="col">Cena</th>
     </tr>
     </thead>
-    <tbody>
-    <?php foreach ($storage->readAllAds("kategoria", $_SESSION["category"]) as $row) {?>
-        <style>
-            #noListings {
-                display: none;
-            }
-        </style>
-        <tr class="tableRows">
-            <td><img class="imagePrew" src="<?php echo $storage->readFirstImage($row["id"]);?>" ></td>
-
-            <td class="popisInOutput"><div><b><a data-modal-target="#model" onclick="setModal('<?php echo $row["id"]?>')"><?php echo $row["title"]?></a></b></div>
-
-            <div><?php echo $row["popis"]?></div></td>
-            <td class="priceInOutput"><?php echo $row["cena"]?> €</td>
-        </tr>
-    <?php }?>
-
+    <tbody id="listings">
+<!--    tu sa nacitavaju listingy javascriptom-->
     </tbody>
 </table>
 
 <b><p id="noListings">Ľutujeme, žiadne inzeráty na zobrazenie</p></b>
 
+<nav aria-label="Page navigation example">
+    <ul class="pagination justify-content-end">
+        <li id="prev" class="page-item ">
+            <a class="page-link" onclick="plusPages(-1)" tabindex="-1">Previous</a>
+        </li>
+        <?php
+            $countAds = $storage->countAds("kategoria", $_SESSION["category"])["pocet"];
+            $pages = $countAds/20;
+            if ($countAds%20 != 0){
+                $pages++;
+            }
+            for ($pageNum = 1; $pageNum <= $pages; $pageNum++) {?>
+                <li id="page<?php echo $pageNum?>" class="page-item"><a class="page-link" onclick="goToPage(<?php echo $pageNum?>)"><?php echo $pageNum?></a></li>
+        <?php }?>
+        <li id="next" class="page-item">
+            <a class="page-link" onclick="plusPages(1)">Next</a>
+        </li>
+    </ul>
+</nav>
+
 <?php include 'detail.php'?>
 
 <script src="js/bootstrap.js"></script>
 <script src="js/script.js"></script>
+<script>
+    initPages(<?php echo intval($pages)?>);
+    goToPage(1);
+</script>
 </body>
 </html>
