@@ -64,7 +64,7 @@ if (isset($_POST["coments"])) {
 <nav aria-label="Page navigation example">
     <ul class="pagination justify-content-end">
         <li id="prev" class="page-item ">
-            <a class="page-link" onclick="plusPages(-1)" tabindex="-1">Previous</a>
+            <a class="page-link" onclick="plusPages(-1)">Previous</a>
         </li>
         <?php
             $countAds = $storage->countAds("kategoria", $_SESSION["category"])["pocet"];

@@ -433,6 +433,22 @@ table {
     resize: none; /*remove the resize handle on the bottom right*/
 }
 
+.page-link {
+    color: black;
+    /*background-color: #F5B60C;*/
+    /*border-color: #F5B60C;*/
+}
+
+.page-link:hover {
+    color: black;
+}
+
+.page-item.active .page-link {
+    color: black;
+    background-color: #F5B60C;
+    border-color: #F5B60C;
+}
+
 @media only screen and (max-width: 900px) {
     #comentLabel {
         width: 100%;

@@ -139,6 +139,24 @@ class DBStorage
         return $stmt;
     }
 
+    public function readAds($colName, $colValue, $pageNum) {
+        $offset = ($pageNum - 1) * 20;
+        $stmt = $this->conn->prepare("SELECT * FROM inzeraty where $colName=? limit 20 offset $offset");
+        $stmt->bindParam(1, $colValue);
+        $stmt->execute();
+
+        return $stmt;
+    }
+
+    public function countAds($colName, $colValue) {
+
+        $stmt = $this->conn->prepare("SELECT COUNT(*) as pocet FROM inzeraty where $colName=?;");
+        $stmt->bindParam(1, $colValue);
+        $stmt->execute();
+
+        return $stmt->fetch();
+    }
+
     public function readAd($id) {
         $stmt = $this->conn->prepare("SELECT * FROM inzeraty where id=?");
         $stmt->bindParam(1, $id);

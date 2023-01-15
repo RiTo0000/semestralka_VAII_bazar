@@ -43,9 +43,13 @@ function closeModal(modal) {
     overlay.classList.remove('active')
 }
 
+function setCategory(category) { //nastavovanie kategorie po chybe pri odoslani formulara pre vytvorenie inzeratu
+    const kategoria = document.querySelector('#kategoria');
+    kategoria.value = category;
+}
+
 
 function setModal(id) {
-
     const xhttpAd = new XMLHttpRequest();
     xhttpAd.onload = function() {
         let response = this.response;

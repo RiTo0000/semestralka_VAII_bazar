@@ -69,6 +69,11 @@ session_start();
                     <?php
                         if (isset($_GET["ad"])) {
                             $ad = json_decode($_GET["ad"], true);
+                            ?>
+                            <script>
+                                setCategory("<?php echo $ad["kategoria"] ?>");
+                            </script>
+                            <?php
                             echo '<input type="text" class="form-control" id="nadpis" name="nadpis" required="required" value="'.$ad["nadpis"].'">';
                         }
                         else {
@@ -82,7 +87,6 @@ session_start();
                 <div class="col-sm-10">
                     <?php
                     if (isset($_GET["ad"])) {
-//                        $ad = json_decode($_GET["ad"], true);
                         echo '<textarea class="form-control" id="popis" name="popis" required="required" maxlength="500">'.$ad["popis"].'</textarea>';
                     }
                     else {
@@ -96,7 +100,6 @@ session_start();
                 <div class="col-sm-10">
                     <?php
                     if (isset($_GET["ad"])) {
-//                        $ad = json_decode($_GET["ad"], true);
                         echo '<input type="number" min="0" step="0.01" class="form-control" id="cena" name="cena" required="required" value="'.$ad["cena"].'">';
                     }
                     else {
