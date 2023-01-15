@@ -57,7 +57,10 @@ function setModal(id) {
         if (numImages > 0) {
             document.getElementById("imageGalery").style.display = "block";
         }
-        document.getElementById("popis").innerHTML = ad["popis"];
+        let detailPopis = document.getElementById("detailPopis");
+        detailPopis.innerHTML = ad["popis"];
+        detailPopis.style.height = "1px";
+        detailPopis.style.height = (25+detailPopis.scrollHeight)+"px";
         document.getElementById("usrEmail").innerHTML = ad["userEmail"];
         document.getElementById("usrEmail").href = "mailto:" + ad["userEmail"];
         document.getElementById("noVisible").value = ad["userEmail"];

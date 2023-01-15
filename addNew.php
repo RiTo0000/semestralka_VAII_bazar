@@ -6,6 +6,7 @@ require "Auth.php";
 
 $storage = new DBStorage();
 session_start();
+
 ?>
 
 <!DOCTYPE html>
@@ -25,124 +26,118 @@ session_start();
 
 <?php include 'menu.php'?>
 
-<div id="addNewForm">
-    <form onsubmit="return chechk();" enctype="multipart/form-data" id="addListingForm" method="post">
-        <div class="row mb-3">
-            <label for="kategoria" class="col-sm-2 col-form-label">Kategória</label>
-            <div class="col-sm-10">
-                <select class="form-select" aria-label="Default select example" id="kategoria" name="kategoria" >
-                    <option value="Auto">Auto</option>
-                    <option value="Motorky">Motorky</option>
-                    <option value="Reality">Reality</option>
-                    <option value="Deti">Deti</option>
-                    <option value="Oblecenie">Oblecenie</option>
-                    <option value="Praca">Praca</option>
-                    <option value="Zvierata">Zvierata</option>
-                    <option value="Stroje">Stroje</option>
-                    <option value="Sport">Sport</option>
-                    <option value="Knihy">Knihy</option>
-                    <option value="PC">PC</option>
-                    <option value="Mobily">Mobily</option>
-                    <option value="Foto">Foto</option>
-                    <option value="Elektro">Elektro</option>
-                    <option value="Hudba">Hudba</option>
-                    <option value="Nabytok">Nabytok</option>
-                    <option value="Sperky">Sperky</option>
-                    <option value="Zdravie">Zdravie</option>
-                    <option value="Zabava">Zabava</option>
-                    <option value="Ostatne">Ostatne</option>
-                </select>
+<?php if (!Auth::isLogged()) {?>
+    <div id="notLoggedIn">
+        <h1><i class="fas fa-exclamation-circle"></i> Pozor nie ste prihlásený</h1>
+        <p>Pre pridanie nového inzerátu sa najprv prosím prihláste</p>
+    </div>
+
+<?php } else {?>
+
+    <div id="addNewForm">
+        <form onsubmit="return chechk();" action="addNew.inc.php" enctype="multipart/form-data" id="addListingForm" method="post">
+            <div class="row mb-3">
+                <label for="kategoria" class="col-sm-2 col-form-label">Kategória</label>
+                <div class="col-sm-10">
+                    <select class="form-select" aria-label="Default select example" id="kategoria" name="kategoria" >
+                        <option value="Auto">Auto</option>
+                        <option value="Motorky">Motorky</option>
+                        <option value="Reality">Reality</option>
+                        <option value="Deti">Deti</option>
+                        <option value="Oblecenie">Oblecenie</option>
+                        <option value="Praca">Praca</option>
+                        <option value="Zvierata">Zvierata</option>
+                        <option value="Stroje">Stroje</option>
+                        <option value="Sport">Sport</option>
+                        <option value="Knihy">Knihy</option>
+                        <option value="PC">PC</option>
+                        <option value="Mobily">Mobily</option>
+                        <option value="Foto">Foto</option>
+                        <option value="Elektro">Elektro</option>
+                        <option value="Hudba">Hudba</option>
+                        <option value="Nabytok">Nabytok</option>
+                        <option value="Sperky">Sperky</option>
+                        <option value="Zdravie">Zdravie</option>
+                        <option value="Zabava">Zabava</option>
+                        <option value="Ostatne">Ostatne</option>
+                    </select>
+                </div>
             </div>
-        </div>
-        <div class="row mb-3">
-            <label for="nadpis" class="col-sm-2 col-form-label">Nadpis</label>
-            <div class="col-sm-10">
-                <input type="text" class="form-control" id="nadpis" name="nadpis" required="required">
+            <div class="row mb-3">
+                <label for="nadpis" class="col-sm-2 col-form-label">Nadpis</label>
+                <div class="col-sm-10">
+                    <?php
+                        if (isset($_GET["ad"])) {
+                            $ad = json_decode($_GET["ad"], true);
+                            echo '<input type="text" class="form-control" id="nadpis" name="nadpis" required="required" value="'.$ad["nadpis"].'">';
+                        }
+                        else {
+                            echo '<input type="text" class="form-control" id="nadpis" name="nadpis" required="required">';
+                        }
+                    ?>
+                </div>
             </div>
-        </div>
-        <div class="row mb-3">
-            <label for="popis" class="col-sm-2 col-form-label">Popis produktu</label>
-            <div class="col-sm-10">
-                <textarea class="form-control" id="popis" name="popis" required="required" maxlength="500"></textarea>
+            <div class="row mb-3">
+                <label for="popis" class="col-sm-2 col-form-label">Popis produktu</label>
+                <div class="col-sm-10">
+                    <?php
+                    if (isset($_GET["ad"])) {
+//                        $ad = json_decode($_GET["ad"], true);
+                        echo '<textarea class="form-control" id="popis" name="popis" required="required" maxlength="500">'.$ad["popis"].'</textarea>';
+                    }
+                    else {
+                        echo '<textarea class="form-control" id="popis" name="popis" required="required" maxlength="500"></textarea>';
+                    }
+                    ?>
+                </div>
             </div>
-        </div>
-        <div class="row mb-3">
-            <label for="cena" class="col-sm-2 col-form-label">Cena (€)</label>
-            <div class="col-sm-10">
-                <input type="number" min="0" step="0.01" class="form-control" id="cena" name="cena" required="required">
+            <div class="row mb-3">
+                <label for="cena" class="col-sm-2 col-form-label">Cena (€)</label>
+                <div class="col-sm-10">
+                    <?php
+                    if (isset($_GET["ad"])) {
+//                        $ad = json_decode($_GET["ad"], true);
+                        echo '<input type="number" min="0" step="0.01" class="form-control" id="cena" name="cena" required="required" value="'.$ad["cena"].'">';
+                    }
+                    else {
+                        echo '<input type="number" min="0" step="0.01" class="form-control" id="cena" name="cena" required="required">';
+                    }
+                    ?>
+                </div>
             </div>
-        </div>
-        <div class="row mb-3">
-            <label for="email" class="col-sm-2 col-form-label">Email</label>
-            <div class="col-sm-10">
-                <?php  if (Auth::isLogged()) { ?>
+            <div class="row mb-3">
+                <label for="email" class="col-sm-2 col-form-label">Email</label>
+                <div class="col-sm-10">
                     <input type="email" class="form-control" id="email" name="email" required="required" readonly value="<?php echo Auth::getName()?>">
-                <?php  } else { ?>
-                    <input type="email" class="form-control" id="email" name="email" required="required" >
-                <?php  }?>
+                </div>
             </div>
-        </div>
-        <div class="row mb-3">
-            <label for="image" class="col-sm-2 col-form-label">Nahraj fotky (max. 5ks)</label>
-            <div class="col-sm-10">
-                <input type="file" class="form-control" id="image" name="image[]" value="" multiple accept="image/*">
+            <div class="row mb-3">
+                <label for="image" class="col-sm-2 col-form-label">Nahraj fotky (max. 5ks)</label>
+                <div class="col-sm-10">
+                    <input type="file" class="form-control" id="image" name="image[]" value="" multiple accept="image/*">
+                </div>
             </div>
-        </div>
-        <button type="submit" id="btnAddNewAd" class="btn btn-primary" name="addNewAd">Pridať inzerát</button>
-    </form>
-</div>
+            <button type="submit" id="btnAddNewAd" class="btn btn-primary" name="addNewAd">Pridať inzerát</button>
+        </form>
+    </div>
+<?php }?>
 
 <?php
-if(isset($_POST["addNewAd"])) {
-    $myFile = $_FILES['image'];
-    $fileCount = count(array_filter($myFile["name"]));
-    if ($fileCount > 5) { //pise ze pridas jeden file aj ked je to prazdne
-        ?>
-        <script>
-            showAlert("Pozor mozes nahrat max 5 obrazkov");
-            notValidForm();
-        </script>
-    <?php
-    }
-    else {
-      $createdAd = $storage->createAd($_POST["email"], $_POST["nadpis"], $_POST["popis"], $_POST["kategoria"], $_POST["cena"], $fileCount);
-    if (!$createdAd) {
-    ?>
-        <script>
-            showAlert("Uzivatel so zadanou emailovou adresou neexistuje");
-            notValidForm();
-        </script>
-    <?php
-    } else {
-    //zaciatok kopcenia
 
-    if (isset($_FILES['image'])) {
-        for ($i = 0; $i < $fileCount; $i++) {
-            $var1 = rand(1111,9999);  // generate random number in $var1 variable
-            $var2 = rand(1111,9999);  // generate random number in $var2 variable
-
-            $var3 = $var1.$var2;  // concatenate $var1 and $var2 in $var3
-            $var3 = md5($var3);   // convert $var3 using md5 function and generate 32 characters hex number
-
-            $fnm = $myFile["name"][$i];    // get the image name in $fnm variable
-            $dst = "./images/".$var3.$fnm;  // storing image path into the {all_images} folder with 32 characters hex number and file name
-            $dst_db = "images/".$var3.$fnm; // storing image path into the database with 32 characters hex number and file name
-
-            move_uploaded_file($myFile["tmp_name"][$i],$dst);  // move image into the {all_images} folder with 32 characters hex number and image name
-
-            $check = $storage->insertImage($createdAd, $dst_db);  // executing insert query
+    if (isset($_GET["addNewAd"])) {
+        $addNewCheck = $_GET["addNewAd"];
+        switch ($addNewCheck) {
+            case "tooManyImages":
+                echo "<p class='errorMsg'>Pozor môžeš nahrať maximálne 5 obrázkov</p>";
+                exit();
+            case "userDontExist":
+                echo "<p class='errorMsg'>Užívateľ so zadanou emailovou adresou neexistuje</p>";
+                exit();
+            case "success":
+                echo "<p class='successMsg'>Pridanie inzerátu prebehlo úspešne</p>";
+                exit();
         }
     }
-
-    //koniec kopcenia
-    ?>
-        <script>
-            showAlert("Pridanie inzeratu prebehlo uspesne");
-        </script>
-        <?php
-    }
-    }
-}
 ?>
 
 </body>

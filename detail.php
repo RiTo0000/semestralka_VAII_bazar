@@ -56,7 +56,8 @@
         </div>
         <!--koniec obrazkovej galerie-->
         <br>
-        <div id="popis"></div>
+<!--        <div id="popis"></div>-->
+        <textarea readonly id="detailPopis"></textarea>
         <br>
         <div id="price"></div>
         <div id="mailAndComents"><div id="contactInfo">Kontaktný email: <a id="usrEmail" href=""></a></div><form enctype="multipart/form-data" method="post"><input id="noVisible" name="userTo"><button type="submit" name="coments" id="comentsBtn" class="btn btn-primary">Recenzie používateľa</button></form></div>

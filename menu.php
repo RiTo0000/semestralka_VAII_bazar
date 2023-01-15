@@ -9,10 +9,10 @@
                 <li class="nav-item">
                     <a class="nav-link" href="addNew.php">Pridať inzerát</a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="myListings.php">Moje inzeráty</a>
-                </li>
                 <?php  if (Auth::isLogged()) { ?>
+                    <li class="nav-item">
+                        <a class="nav-link" href="myListings.php">Moje inzeráty</a>
+                    </li>
                     <li class="nav-item">
                         <a class="nav-link" aria-current="page" href="login.php"><?php echo Auth::getName()?></a>
                     </li>

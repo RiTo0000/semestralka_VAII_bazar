@@ -55,89 +55,81 @@ if(isset($_POST["updateAd"])) {
 
 <?php include 'menu.php'?>
 
+<h1>Vaše inzeráty</h1>
 
-<?php if (!Auth::isLogged()) {?>
-    <div id="noListings">
-        <h1><i class="fas fa-exclamation-circle"></i> Pozor nie ste prihláseny</h1>
-        <p>Pre zobrazenie vašich inzerátov sa najprv prosím prihláste</p>
-    </div>
-
-<?php } else {?>
-    <h1>Vaše inzeráty</h1>
-
-    <table class="table">
-        <thead>
-        <tr>
-            <th scope="col">Image</th>
-            <th scope="col">Produkt na predaj</th>
-            <th scope="col">Cena</th>
-            <th scope="col"></th>
-            <th scope="col"></th>
+<table class="table">
+    <thead>
+    <tr>
+        <th scope="col">Image</th>
+        <th scope="col">Produkt na predaj</th>
+        <th scope="col">Cena</th>
+        <th scope="col"></th>
+        <th scope="col"></th>
+    </tr>
+    </thead>
+    <tbody>
+    <?php foreach ($storage->readAllAds("userEmail", $_SESSION["name"]) as $row) {?>
+        <style>
+            #noListings {
+                display: none;
+            }
+        </style>
+        <tr class="tableRows">
+            <td><img class="imagePrew" src="<?php echo $storage->readFirstImage($row["id"]);?>" ></td>
+            <td class="popisInOutput"><div><b><a data-modal-target="#model" onclick="setModal('<?php echo $row["id"]?>')"><?php echo $row["title"]?></a></b></div>
+            <div><?php echo $row["popis"]?></div></td>
+            <td class="priceInOutput"><?php echo $row["cena"]?> €</td>
+            <td class="trashInOutput"><a data-modal-target="#model2" onclick="edit('<?php echo $row["id"]?>')"><i class="fas fa-edit"></i></a></td>
+            <td class="trashInOutput"><a href="?delete=<?php echo $row["id"] ?>"><i class="fas fa-trash trashAd"></i></a></td>
         </tr>
-        </thead>
-        <tbody>
-        <?php foreach ($storage->readAllAds("userEmail", $_SESSION["name"]) as $row) {?>
-            <style>
-                #noListings {
-                    display: none;
-                }
-            </style>
-            <tr class="tableRows">
-                <td><img class="imagePrew" src="<?php echo $storage->readFirstImage($row["id"]);?>" ></td>
-                <td class="popisInOutput"><div><b><a data-modal-target="#model" onclick="setModal('<?php echo $row["id"]?>')"><?php echo $row["title"]?></a></b></div>
-                <div><?php echo $row["popis"]?></div></td>
-                <td class="priceInOutput"><?php echo $row["cena"]?> €</td>
-                <td class="trashInOutput"><a data-modal-target="#model2" onclick="edit('<?php echo $row["id"]?>')"><i class="fas fa-edit"></i></a></td>
-                <td class="trashInOutput"><a href="?delete=<?php echo $row["id"] ?>"><i class="fas fa-trash trashAd"></i></a></td>
-            </tr>
-        <?php }?>
+    <?php }?>
 
-        </tbody>
-    </table>
+    </tbody>
+</table>
 
-    <b><p id="noListings">Ľutujeme, žiadne inzeráty na zobrazenie</p></b>
+<b><p id="noListings">Ľutujeme, žiadne inzeráty na zobrazenie</p></b>
 
-    <?php include 'detail.php'?>
-    <!--zaciatok upravy-->
-    <div class="model" id="model2">
-        <div class="model-header">
-            <div class="title" id="titleUpdate"></div>
-            <button data-close-button class="close-button">&times;</button>
-        </div>
-        <div class="model-body">
-            <div id="updateAdForm">
-                <form onsubmit="return chechk();" enctype="multipart/form-data" id="addListingForm" method="post">
-                    <div class="row mb-3 display-none">
-                        <label for="idUpdate" class="col-sm-2 col-form-label">ID</label>
-                        <div class="col-sm-10">
-                            <input type="number" class="form-control" id="idUpdate" name="idUpdate" required="required">
-                        </div>
+<?php include 'detail.php'?>
+<!--zaciatok upravy-->
+<div class="model" id="model2">
+    <div class="model-header">
+        <div class="title" id="titleUpdate"></div>
+        <button data-close-button class="close-button">&times;</button>
+    </div>
+    <div class="model-body">
+        <div id="updateAdForm">
+            <form onsubmit="return chechk();" enctype="multipart/form-data" id="addListingForm" method="post">
+                <div class="row mb-3 display-none">
+                    <label for="idUpdate" class="col-sm-2 col-form-label">ID</label>
+                    <div class="col-sm-10">
+                        <input type="number" class="form-control" id="idUpdate" name="idUpdate" required="required">
                     </div>
-                    <div class="row mb-3">
-                        <label for="nadpis" class="col-sm-2 col-form-label">Nadpis</label>
-                        <div class="col-sm-10">
-                            <input type="text" class="form-control" id="nadpisUpdate" name="nadpisUpdate" required="required">
-                        </div>
+                </div>
+                <div class="row mb-3">
+                    <label for="nadpis" class="col-sm-2 col-form-label">Nadpis</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" id="nadpisUpdate" name="nadpisUpdate" required="required">
                     </div>
-                    <div class="row mb-3">
-                        <label for="popis" class="col-sm-2 col-form-label">Popis produktu</label>
-                        <div class="col-sm-10">
-                            <textarea class="form-control" id="popisUpdate" name="popisUpdate" required="required" maxlength="500"></textarea>
-                        </div>
+                </div>
+                <div class="row mb-3">
+                    <label for="popis" class="col-sm-2 col-form-label">Popis produktu</label>
+                    <div class="col-sm-10">
+                        <textarea class="form-control" id="popisUpdate" name="popisUpdate" required="required" maxlength="500"></textarea>
                     </div>
-                    <div class="row mb-3">
-                        <label for="cena" class="col-sm-2 col-form-label">Cena (€)</label>
-                        <div class="col-sm-10">
-                            <input type="number" min="0" step="0.01" class="form-control" id="cenaUpdate" name="cenaUpdate" required="required">
-                        </div>
+                </div>
+                <div class="row mb-3">
+                    <label for="cena" class="col-sm-2 col-form-label">Cena (€)</label>
+                    <div class="col-sm-10">
+                        <input type="number" min="0" step="0.01" class="form-control" id="cenaUpdate" name="cenaUpdate" required="required">
                     </div>
-                    <button type="submit" id="btnUpdateAd" class="btn btn-primary" name="updateAd">Upraviť inzerát</button>
-                </form>
-            </div>
+                </div>
+                <button type="submit" id="btnUpdateAd" class="btn btn-primary" name="updateAd">Upraviť inzerát</button>
+            </form>
         </div>
     </div>
-    <div id="overlay"></div>
-<?php }?>
+</div>
+<div id="overlay"></div>
+
 
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js%22%3E"></script>

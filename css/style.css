@@ -342,7 +342,7 @@ table {
     height: auto;
 }
 
-#noListings, #noComents {
+#noListings, #noComents, #notLoggedIn {
     margin-left: 10%;
 }
 
@@ -405,6 +405,32 @@ table {
 #comentLabel {
     width: 10%;
     margin: auto;
+}
+
+.errorMsg, .successMsg {
+    text-align: center;
+    font-weight: bold;
+}
+
+.errorMsg {
+    color: red;
+}
+
+.successMsg {
+    color: green;
+}
+
+#detailPopis {
+    width: 100%;
+    border: none;
+    overflow: auto;
+    outline: none;
+
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+    box-shadow: none;
+
+    resize: none; /*remove the resize handle on the bottom right*/
 }
 
 @media only screen and (max-width: 900px) {
