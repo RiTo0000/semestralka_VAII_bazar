@@ -1,13 +1,5 @@
-function showAlert(msg) {
-    alert(msg);
-}
-
 function confirmAction(msg) {
     return confirm(msg);
-}
-
-function notValidForm(){
-    window.history.back();
 }
 
 const openModalButtons = document.querySelectorAll('[data-modal-target]')

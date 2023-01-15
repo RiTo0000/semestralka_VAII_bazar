@@ -18,24 +18,6 @@ if (isset($_POST["coments"])) {
     header("Location: /coments.php");
     exit();
 }
-
-
-//if(isset($_POST["updateAd"])) {
-//    if (!$storage->updateAd($_POST["idUpdate"], $_POST["nadpisUpdate"], $_POST["popisUpdate"], $_POST["cenaUpdate"])) {
-//        ?>
-<!--        <script>-->
-<!--            showAlert("Pri uprave sa nieco pokazilo");-->
-<!--            notValidForm();-->
-<!--        </script>-->
-<!--        --><?php
-//    } else {
-//        ?>
-<!--        <script>-->
-<!--            showAlert("Upravenie inzeratu prebehlo uspesne");-->
-<!--        </script>-->
-<!--        --><?php
-//    }
-//}
 ?>
 
 
@@ -56,6 +38,19 @@ if (isset($_POST["coments"])) {
 <?php include 'menu.php'?>
 
 <h1>Vaše inzeráty</h1>
+
+<?php
+
+if (isset($_GET["updateAd"])) {
+    $updateAd = $_GET["updateAd"];
+    switch ($updateAd) {
+        case "genError":
+            echo "<p class='errorMsg'>Pri úprave inzerátu nastala chyba</p>";
+        case "success":
+            echo "<p class='successMsg'>Úprava inzerátu prebehla úspešne</p>";
+    }
+}
+?>
 
 <table class="table">
     <thead>
@@ -98,7 +93,7 @@ if (isset($_POST["coments"])) {
     </div>
     <div class="model-body">
         <div id="updateAdForm">
-            <form onsubmit="return chechk();" enctype="multipart/form-data" id="addListingForm" method="post">
+            <form action="myListings.inc.php" enctype="multipart/form-data" id="addListingForm" method="post">
                 <div class="row mb-3 display-none">
                     <label for="idUpdate" class="col-sm-2 col-form-label">ID</label>
                     <div class="col-sm-10">
@@ -130,9 +125,6 @@ if (isset($_POST["coments"])) {
 </div>
 <div id="overlay"></div>
 
-
-
-<!--<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js%22%3E"></script>-->
 <script src="js/bootstrap.js"></script>
 <script src="js/script.js"></script>
 </body>
