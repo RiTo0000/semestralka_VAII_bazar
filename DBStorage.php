@@ -46,7 +46,7 @@ class DBStorage
         return md5($unhashed);   // konvertuje cez md5
     }
 
-    public function updateUserInfo($origEmail, $email, $pPassword, $name, $surname) {
+    public function updateUserInfo($origEmail, $pPassword, $name, $surname) {
         $stmt = $this->conn->prepare("SELECT * FROM users where email=?");
         $stmt->bindParam(1, $origEmail);
         $stmt->execute();
@@ -62,7 +62,7 @@ class DBStorage
         $stmt2->bindParam(':name', $name);
         $stmt2->bindParam(':surname', $surname);
         $stmt2->bindParam(':origEmail', $origEmail);
-        $stmt2->execute();
+        return $stmt2->execute();
     }
 
     public function readUserInfo($email) {

@@ -2,6 +2,10 @@ function showAlert(msg) {
     alert(msg);
 }
 
+function confirmAction(msg) {
+    return confirm(msg);
+}
+
 function notValidForm(){
     window.history.back();
 }
@@ -92,7 +96,7 @@ function edit(id) {
         let response = this.response;
         let ad = JSON.parse(response);
         document.getElementById("idUpdate").setAttribute('value', ad["id"]);
-        document.getElementById("titleUpdate").innerHTML = "Uprava inzeratu: " + ad["title"];
+        document.getElementById("titleUpdate").innerHTML = "Úprava inzerátu: " + ad["title"];
         document.getElementById("nadpisUpdate").setAttribute('value', ad["title"]);
         document.getElementById("popisUpdate").innerHTML = ad["popis"];
         document.getElementById("cenaUpdate").setAttribute('value', ad["cena"]);

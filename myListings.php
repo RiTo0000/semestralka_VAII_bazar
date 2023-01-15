@@ -20,22 +20,22 @@ if (isset($_POST["coments"])) {
 }
 
 
-if(isset($_POST["updateAd"])) {
-    if (!$storage->updateAd($_POST["idUpdate"], $_POST["nadpisUpdate"], $_POST["popisUpdate"], $_POST["cenaUpdate"])) {
-        ?>
-        <script>
-            showAlert("Pri uprave sa nieco pokazilo");
-            notValidForm();
-        </script>
-        <?php
-    } else {
-        ?>
-        <script>
-            showAlert("Upravenie inzeratu prebehlo uspesne");
-        </script>
-        <?php
-    }
-}
+//if(isset($_POST["updateAd"])) {
+//    if (!$storage->updateAd($_POST["idUpdate"], $_POST["nadpisUpdate"], $_POST["popisUpdate"], $_POST["cenaUpdate"])) {
+//        ?>
+<!--        <script>-->
+<!--            showAlert("Pri uprave sa nieco pokazilo");-->
+<!--            notValidForm();-->
+<!--        </script>-->
+<!--        --><?php
+//    } else {
+//        ?>
+<!--        <script>-->
+<!--            showAlert("Upravenie inzeratu prebehlo uspesne");-->
+<!--        </script>-->
+<!--        --><?php
+//    }
+//}
 ?>
 
 
@@ -80,7 +80,7 @@ if(isset($_POST["updateAd"])) {
             <div><?php echo $row["popis"]?></div></td>
             <td class="priceInOutput"><?php echo $row["cena"]?> €</td>
             <td class="trashInOutput"><a data-modal-target="#model2" onclick="edit('<?php echo $row["id"]?>')"><i class="fas fa-edit"></i></a></td>
-            <td class="trashInOutput"><a href="?delete=<?php echo $row["id"] ?>"><i class="fas fa-trash trashAd"></i></a></td>
+            <td class="trashInOutput"><a onclick="return confirmAction('Ste si istý že chcete odstrániť tento inzerát?');" href="?delete=<?php echo $row["id"] ?>"><i class="fas fa-trash trashAd"></i></a></td>
         </tr>
     <?php }?>
 
@@ -132,7 +132,7 @@ if(isset($_POST["updateAd"])) {
 
 
 
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js%22%3E"></script>
+<!--<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js%22%3E"></script>-->
 <script src="js/bootstrap.js"></script>
 <script src="js/script.js"></script>
 </body>

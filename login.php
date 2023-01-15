@@ -22,18 +22,8 @@ session_start();
 <body>
 
 <?php
-if(isset($_POST["login"])) {
-    if ($storage->findUser($_POST["login"], $_POST["password"])) {
-        Auth::login($_POST["login"]);
-    }
-}
-
 if(isset($_POST["logout"])) {
     Auth::logout();
-}
-
-if (isset($_POST["updateUserInfo"])) {
-    $storage->updateUserInfo($_SESSION["name"], $_POST["email"], $_POST["password"], $_POST["meno"], $_POST["priezvisko"]);
 }
 
 if (isset($_POST["deleteUser"])) {
@@ -50,7 +40,7 @@ if (isset($_POST["deleteUser"])) {
 <?php if (!Auth::isLogged()) {?>
     <div id="loginAndRegistration" class="row row-cols-1 row-cols-sm-1 row-cols-md-2">
         <div id="loginForm" class="col">
-            <form method="post" action="#">
+            <form method="post" action="login.inc.php">
                 <div class="row mb-3">
                     <label for="login" class="col-sm-2 col-form-label">Email</label>
                     <div class="col-sm-10">
@@ -102,7 +92,7 @@ if (isset($_POST["deleteUser"])) {
 <?php if (Auth::isLogged()) {
     $logonUser = $storage->readUserInfo($_SESSION["name"]);
     ?>
-    <form method="post" action="#" id="updateInfoForm">
+    <form method="post" action="login.inc.php" id="updateInfoForm">
         <div class="row mb-3">
             <label for="inputName" class="col-sm-2 col-form-label">Meno</label>
             <div class="col-sm-10">
@@ -127,57 +117,31 @@ if (isset($_POST["deleteUser"])) {
                 <input type="password" class="form-control" id="inputPassword3" name="password" required="required" value="<?php echo $logonUser["password"]?>">
             </div>
         </div>
-        <button type="submit" id="btnUpdateInfo" class="btn btn-primary" name="updateUserInfo">Aktualizovat</button>
+        <button type="submit" id="btnUpdateInfo" class="btn btn-primary" name="updateUserInfo">Aktualizovať</button>
     </form>
-    <form method="post" action="/login.php">
-        <button type="submit" id="btnDeleteUser" class="btn btn-primary" name="deleteUser">Odstranit uzivatela</button>
+    <form onsubmit="return confirmAction('Ste si istý že chcete odstrániť užívateľa?');" method="post" action="/login.php">
+        <button type="submit" id="btnDeleteUser" class="btn btn-primary" name="deleteUser">Odstrániť užívateľa</button>
     </form>
 <?php }?>
 
 <?php
-if(isset($_POST["login"])) {
-    if (!$storage->findUser($_POST["login"], $_POST["password"])) {
-        ?>
-        <script>
-            showAlert("Prihlásenie používateľa sa nepodarilo, zadali ste nesprávne prihlasovacie údaje");
-        </script>
-        <?php
+
+if (isset($_GET["logon"])) {
+    $logon = $_GET["logon"];
+    if ($logon == "incorrectLogin") {
+        echo "<p class='errorMsg'>Prihlásenie používateľa sa nepodarilo, zadali ste nesprávne prihlasovacie údaje</p>";
+        exit();
     }
 }
-else if(isset($_POST["registerNewUser"])) {
-    if ($_POST["password"] == $_POST["password2"]) {
-        //hashovanie hesla a pridavanie salt
-        try {
-            $salt = bin2hex(random_bytes(10));
-        } catch (Exception $e) {
-        }
-
-        $password = $storage->hashPassword($salt, $_POST["password"]);
-
-    if (!$storage->createUser($_POST["email"], $password, $_POST["meno"], $_POST["priezvisko"], $salt)) {
-        ?>
-        <script>
-            showAlert("Registrácia nového používateľa sa nepodarila, konto so zadaným emailom už existuje skúste sa prihlásiť");
-            notValidForm();
-        </script>
-    <?php
-    }
-    else {
-    ?>
-        <script>
-            showAlert("Registrácia nového používateľa sa podarila");
-        </script>
-    <?php
-    }
-    }
-    else {
-    ?>
-        <script>
-
-            showAlert("Registrácia nového používateľa sa nepodarila, vaše heslá sa nezhodujú");
-            notValidForm();
-        </script>
-        <?php
+elseif (isset($_GET["updateUser"])) {
+    $updateUser = $_GET["updateUser"];
+    switch ($updateUser) {
+        case "genError":
+            echo "<p class='errorMsg'>Pri úprave používateľského konta nastala chyba</p>";
+            exit();
+        case "success":
+            echo "<p class='successMsg'>Úprava používateľského konta prebehla úspešne</p>";
+            exit();
     }
 }
 ?>
