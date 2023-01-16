@@ -46,8 +46,10 @@ if (isset($_GET["updateAd"])) {
     switch ($updateAd) {
         case "genError":
             echo "<p class='errorMsg'>Pri úprave inzerátu nastala chyba</p>";
+            break;
         case "success":
             echo "<p class='successMsg'>Úprava inzerátu prebehla úspešne</p>";
+            break;
     }
 }
 ?>

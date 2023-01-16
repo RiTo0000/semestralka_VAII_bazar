@@ -57,18 +57,42 @@ if (isset($_POST["deleteUser"])) {
             </form>
         </div>
         <div id="registrationForm" class="col">
-            <form method="post" action="#" class="row g-3">
+            <form method="post" action="login.inc.php" class="row g-3">
                 <div class="col-md-6">
                     <label for="meno" class="form-label">Meno</label>
-                    <input type="text" class="form-control" id="meno" required="required" name="meno">
+                    <?php
+                    if (isset($_GET["register"]) && isset($_GET["name"])) {
+                        $name = $_GET["name"];
+                        echo '<input type="text" class="form-control" id="meno" required="required" name="meno" value="'.$name.'">';
+                    }
+                    else {
+                        echo '<input type="text" class="form-control" id="meno" required="required" name="meno">';
+                    }
+                    ?>
                 </div>
                 <div class="col-md-6">
                     <label for="priezvisko" class="form-label">Priezvisko</label>
-                    <input type="text" class="form-control" id="priezvisko" required="required" name="priezvisko">
+                    <?php
+                    if (isset($_GET["register"]) && isset($_GET["surname"])) {
+                        $surname = $_GET["surname"];
+                        echo '<input type="text" class="form-control" id="priezvisko" required="required" name="priezvisko" value="'.$surname.'">';
+                    }
+                    else {
+                        echo '<input type="text" class="form-control" id="priezvisko" required="required" name="priezvisko">';
+                    }
+                    ?>
                 </div>
                 <div class="col-12">
                     <label for="email" class="form-label">Email</label>
-                    <input type="email" class="form-control" id="email" name="email" required="required" placeholder="example@gmail.com">
+                    <?php
+                    if (isset($_GET["register"]) && isset($_GET["email"])) {
+                        $surname = $_GET["email"];
+                        echo '<input type="email" class="form-control" id="email" name="email" required="required" placeholder="example@gmail.com" value="'.$surname.'">';
+                    }
+                    else {
+                        echo '<input type="email" class="form-control" id="email" name="email" required="required" placeholder="example@gmail.com">';
+                    }
+                    ?>
                 </div>
                 <div class="col-12">
                     <label for="password2" class="form-label">Password</label>
@@ -141,6 +165,23 @@ elseif (isset($_GET["updateUser"])) {
             exit();
         case "success":
             echo "<p class='successMsg'>Úprava používateľského konta prebehla úspešne</p>";
+            exit();
+    }
+}
+elseif (isset($_GET["register"])) {
+    $register = $_GET["register"];
+    switch ($register) {
+        case "passwordsUnequal":
+            echo "<p class='errorMsg'>Zadané heslá sa nezhodujú</p>";
+            exit();
+        case "invalidEmail":
+            echo "<p class='errorMsg'>Zadaná e-mailová adresa nie je platná</p>";
+            exit();
+        case "userAlreadyExists":
+            echo "<p class='errorMsg'>Používateľ so zadanou e-mailovou adresou už existuje</p>";
+            exit();
+        case "success":
+            echo "<p class='successMsg'>Registrácia užívateľa prebehla úspešne</p>";
             exit();
     }
 }

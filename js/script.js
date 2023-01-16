@@ -90,7 +90,10 @@ function edit(id) {
         document.getElementById("idUpdate").setAttribute('value', ad["id"]);
         document.getElementById("titleUpdate").innerHTML = "Úprava inzerátu: " + ad["title"];
         document.getElementById("nadpisUpdate").setAttribute('value', ad["title"]);
-        document.getElementById("popisUpdate").innerHTML = ad["popis"];
+        let editPopis = document.getElementById("popisUpdate");
+        editPopis.innerHTML = ad["popis"];
+        editPopis.style.height = "1px";
+        editPopis.style.height = (25+editPopis.scrollHeight)+"px";
         document.getElementById("cenaUpdate").setAttribute('value', ad["cena"]);
     }
     xhttpAd.open("GET", "AjaxController.php?action=readAd&id="+id);
@@ -214,6 +217,13 @@ function filterPrice(pPrice) { //return true ked ma byt zobrazeny a false ak ma 
     }
 }
 
+function filterDB() {
+    let filterTxt = document.getElementById("search").value;
+    let minPrice = document.getElementById("priceFrom").value;
+    let maxPrice = document.getElementById("priceTo").value;
+    loadListingsPage(filterTxt, maxPrice, minPrice);
+}
+
 //pagination
 var pageNumber;
 var totalPages;
@@ -237,24 +247,28 @@ function goToPage(pageNum) {
         else {
             document.getElementById("next").classList.remove("disabled");
         }
-        const xhttpAds = new XMLHttpRequest();
-        xhttpAds.onload = function() {
-            let listingsTable = this.response;
-
-            document.getElementById("listings").innerHTML = listingsTable;
-
-            const openModalButtons = document.querySelectorAll('[data-modal-target]')
-
-            openModalButtons.forEach(button => {
-                button.addEventListener('click', () => {
-                    const modal = document.querySelector(button.dataset.modalTarget)
-                    openModal(modal)
-                })
-            })
-        }
-        xhttpAds.open("GET", "listings.php?pageNum="+pageNum);
-        xhttpAds.send();
+        loadListingsPage("","","");
     }
+}
+
+function loadListingsPage(filterTxt, filterMaxPrice, filterMinPrice) {
+    const xhttpAds = new XMLHttpRequest();
+    xhttpAds.onload = function() {
+        let listingsTable = this.response;
+
+        document.getElementById("listings").innerHTML = listingsTable;
+
+        const openModalButtons = document.querySelectorAll('[data-modal-target]')
+
+        openModalButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                const modal = document.querySelector(button.dataset.modalTarget)
+                openModal(modal)
+            })
+        })
+    }
+    xhttpAds.open("GET", "listings.php?pageNum="+pageNumber+"&filterTxt="+filterTxt+"&filterMinPrice="+filterMinPrice+"&filterMaxPrice="+filterMaxPrice);
+    xhttpAds.send();
 }
 
 function plusPages(plusNum) {

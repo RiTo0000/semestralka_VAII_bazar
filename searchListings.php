@@ -34,15 +34,15 @@ if (isset($_POST["coments"])) {
 <div id="filter">
     <div class="filter">
         <label class="col-sm-2 col-form-label filterLabel">Hľadaný výraz: </label>
-        <input type="text" class="form-control" id="search" onkeyup="filter()">
+        <input type="text" class="form-control" id="search" onkeyup="filterDB()">
     </div>
     <div class="filter">
         <label class="col-sm-2 col-form-label filterLabel">Cena od: </label>
-        <input type="number" min="0" step="0.01" class="form-control" id="priceFrom" onkeyup="filter()">
+        <input type="number" min="0" step="0.01" class="form-control" id="priceFrom" onkeyup="filterDB()">
     </div>
     <div class="filter">
         <label class="col-sm-2 col-form-label filterLabel">Cena do: </label>
-        <input type="number" class="form-control" id="priceTo" onkeyup="filter()">
+        <input type="number" class="form-control" id="priceTo" onkeyup="filterDB()">
     </div>
 </div>
 

@@ -18,7 +18,14 @@ if(isset($_POST["login"])) {
     }
 }
 elseif(isset($_POST["registerNewUser"])) {
-    if ($_POST["password"] == $_POST["password2"]) {
+    $name = $_POST["meno"];
+    $surname = $_POST["priezvisko"];
+    $email = $_POST["email"];
+    if (!filter_var($email, FILTER_VALIDATE_EMAIL)){
+        header("Location: ../login.php?register=invalidEmail&name=$name&surname=$surname");
+        exit();
+    }
+    else if ($_POST["password"] == $_POST["password2"]) {
         //hashovanie hesla a pridavanie salt
         try {
             $salt = bin2hex(random_bytes(10));
@@ -27,7 +34,7 @@ elseif(isset($_POST["registerNewUser"])) {
 
         $password = $storage->hashPassword($salt, $_POST["password"]);
 
-        if (!$storage->createUser($_POST["email"], $password, $_POST["meno"], $_POST["priezvisko"], $salt)) {
+        if (!$storage->createUser($email, $password, $name, $surname, $salt)) {
             header("Location: ../login.php?register=userAlreadyExists");
             exit();
         }
@@ -37,7 +44,7 @@ elseif(isset($_POST["registerNewUser"])) {
         }
     }
     else {
-        header("Location: ../login.php?register=passwordsUnequal");
+        header("Location: ../login.php?register=passwordsUnequal&email=$email&name=$name&surname=$surname");
         exit();
     }
 }

@@ -20,7 +20,7 @@ class DBStorage
         }
     }
 
-    public function findUser($email, $pPassword) {
+    public function findUser($email, $pPassword): bool {
         $stmt = $this->conn->prepare("SELECT * FROM users where email=?");
         $stmt->bindParam(1, $email);
         $stmt->execute();
@@ -46,7 +46,7 @@ class DBStorage
         return md5($unhashed);   // konvertuje cez md5
     }
 
-    public function updateUserInfo($origEmail, $pPassword, $name, $surname) {
+    public function updateUserInfo($origEmail, $pPassword, $name, $surname): bool {
         $stmt = $this->conn->prepare("SELECT * FROM users where email=?");
         $stmt->bindParam(1, $origEmail);
         $stmt->execute();
@@ -92,7 +92,7 @@ class DBStorage
 
     }
 
-    public function createUser($email, $password, $name, $surname, $salt) {
+    public function createUser($email, $password, $name, $surname, $salt): bool {
         $user = $this->readUserInfo($email);
 
         if ($user != null) {
@@ -139,10 +139,18 @@ class DBStorage
         return $stmt;
     }
 
-    public function readAds($colName, $colValue, $pageNum) {
+    public function readAds($colName, $colValue, $pageNum, $filterTxt, $filterMinPrice, $filterMaxPrice) {
+        $filterTitlePopis = "%".$filterTxt."%";
+        if ($filterMaxPrice == null) {
+            $filterMaxPrice = 1.7976931348623157E+308;
+        }
         $offset = ($pageNum - 1) * 20;
-        $stmt = $this->conn->prepare("SELECT * FROM inzeraty where $colName=? limit 20 offset $offset");
+        $stmt = $this->conn->prepare("SELECT * FROM inzeraty where $colName=? and ( title like ? or popis like ? ) and cena >= ? and cena <= ? limit 20 offset $offset");
         $stmt->bindParam(1, $colValue);
+        $stmt->bindParam(2, $filterTitlePopis);
+        $stmt->bindParam(3, $filterTitlePopis);
+        $stmt->bindParam(4, $filterMinPrice);
+        $stmt->bindParam(5, $filterMaxPrice);
         $stmt->execute();
 
         return $stmt;
@@ -174,7 +182,7 @@ class DBStorage
 
     }
 
-    public function updateAd($id, $title, $popis, $cena) {
+    public function updateAd($id, $title, $popis, $cena): bool {
         $stmt = $this->conn->prepare("UPDATE inzeraty SET title = :title, popis = :popis, cena = :cena where id = :id");
         $stmt->bindParam(":title", $title);
         $stmt->bindParam(":popis", $popis);
