@@ -4,7 +4,7 @@
         <button data-close-button class="close-button">&times;</button>
     </div>
     <div class="model-body">
-        <div id="kategoria"></div>
+        <div id="kategoriaDetail"></div>
         <!--zaciatok obrazkovej galerie-->
         <div class="container" id="imageGalery">
 

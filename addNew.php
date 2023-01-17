@@ -35,7 +35,7 @@ session_start();
 <?php } else {?>
 
     <div id="addNewForm">
-        <form onsubmit="return chechk();" action="addNew.inc.php" enctype="multipart/form-data" id="addListingForm" method="post">
+        <form  action="addNew.inc.php" enctype="multipart/form-data" id="addListingForm" method="post">
             <div class="row mb-3">
                 <label for="kategoria" class="col-sm-2 col-form-label">Kategória</label>
                 <div class="col-sm-10">
@@ -130,6 +130,9 @@ session_start();
     if (isset($_GET["addNewAd"])) {
         $addNewCheck = $_GET["addNewAd"];
         switch ($addNewCheck) {
+            case "fileTooBig":
+                echo "<p class='errorMsg'>Nahratá fotka je príliš veľká</p>";
+                exit();
             case "tooManyImages":
                 echo "<p class='errorMsg'>Pozor môžeš nahrať maximálne 5 obrázkov</p>";
                 exit();

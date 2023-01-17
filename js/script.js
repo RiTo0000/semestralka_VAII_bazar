@@ -37,6 +37,7 @@ function closeModal(modal) {
     if (modal == null) return
     modal.classList.remove('active')
     overlay.classList.remove('active')
+    clearModal();
 }
 
 function setCategory(category) { //nastavovanie kategorie po chybe pri odoslani formulara pre vytvorenie inzeratu
@@ -44,6 +45,19 @@ function setCategory(category) { //nastavovanie kategorie po chybe pri odoslani 
     kategoria.value = category;
 }
 
+function clearModal() {
+    document.getElementById("title").innerHTML = "";
+    document.getElementById("kategoriaDetail").innerHTML = "";
+    document.getElementById("imageGalery").style.display = "none";
+    document.getElementById("detailPopis").innerHTML = "";
+    document.getElementById("usrEmail").innerHTML = "";
+    document.getElementById("noVisible").value = "";
+    document.getElementById("price").innerHTML = "";
+    for (let x = 1; x <= 5; x++) {
+        document.getElementsByClassName("image"+x)[0].src = "";
+        document.getElementsByClassName("image"+x)[1].src = "";
+    }
+}
 
 function setModal(id) {
     const xhttpAd = new XMLHttpRequest();
@@ -52,7 +66,7 @@ function setModal(id) {
         let ad = JSON.parse(response);
         setSlides(ad["pocetObrazkov"]);
         document.getElementById("title").innerHTML = ad["title"];
-        document.getElementById("kategoria").innerHTML = ad["kategoria"];
+        document.getElementById("kategoriaDetail").innerHTML = ad["kategoria"];
         document.getElementById("imageGalery").style.display = "none";
         if (numImages > 0) {
             document.getElementById("imageGalery").style.display = "block";
@@ -64,7 +78,7 @@ function setModal(id) {
         document.getElementById("usrEmail").innerHTML = ad["userEmail"];
         document.getElementById("usrEmail").href = "mailto:" + ad["userEmail"];
         document.getElementById("noVisible").value = ad["userEmail"];
-        document.getElementById("price").innerHTML = "Cena: " + ad["cena"];
+        document.getElementById("price").innerHTML = "Cena: " + ad["cena"] + "€";
     }
     xhttpAd.open("GET", "AjaxController.php?action=readAd&id="+id);
     xhttpAd.send();

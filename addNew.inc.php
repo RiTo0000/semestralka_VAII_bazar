@@ -12,6 +12,15 @@ if(isset($_POST["addNewAd"])) {
     $myFile = $_FILES['image'];
     $ad = json_encode($_POST);
     $fileCount = count(array_filter($myFile["name"]));
+    for ($i = 0; $i < $fileCount; $i++) {
+
+        $size = $myFile["size"][$i];    // nacitanie velkosti nahratej fotky
+
+        if ($size > 8388608){ //kontrola velkosti fotky max 8MB
+            header("Location: ../addNew.php?addNewAd=fileTooBig&ad=$ad");
+            exit();
+        }
+    }
     if ($cena < 0){
         header("Location: ../addNew.php?addNewAd=negativePrice&ad=$ad");
         exit();
@@ -40,9 +49,10 @@ if(isset($_POST["addNewAd"])) {
                     $dst = "./images/".$var3.$fnm;  // storing image path into the {all_images} folder with 32 characters hex number and file name
                     $dst_db = "images/".$var3.$fnm; // storing image path into the database with 32 characters hex number and file name
 
-                    move_uploaded_file($myFile["tmp_name"][$i],$dst);  // move image into the {all_images} folder with 32 characters hex number and image name
-
-                    $check = $storage->insertImage($createdAd, $dst_db);  // executing insert query
+                    $imageMoved = move_uploaded_file($myFile["tmp_name"][$i],$dst);  // move image into the {all_images} folder with 32 characters hex number and image name
+                    if ($imageMoved) {
+                        $check = $storage->insertImage($createdAd, $dst_db);  // executing insert query
+                    }
                 }
             }
 
