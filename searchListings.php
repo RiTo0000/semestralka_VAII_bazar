@@ -34,15 +34,15 @@ if (isset($_POST["coments"])) {
 <div id="filter">
     <div class="filter">
         <label class="col-sm-2 col-form-label filterLabel">Hľadaný výraz: </label>
-        <input type="text" class="form-control" id="search" onkeyup="filterDB()">
+        <input type="text" class="form-control" id="search" onkeyup="filter()">
     </div>
     <div class="filter">
         <label class="col-sm-2 col-form-label filterLabel">Cena od: </label>
-        <input type="number" min="0" step="0.01" class="form-control" id="priceFrom" onkeyup="filterDB()">
+        <input type="number" min="0" step="0.01" class="form-control" id="priceFrom" onkeyup="filter()">
     </div>
     <div class="filter">
         <label class="col-sm-2 col-form-label filterLabel">Cena do: </label>
-        <input type="number" class="form-control" id="priceTo" onkeyup="filterDB()">
+        <input type="number" class="form-control" id="priceTo" onkeyup="filter()">
     </div>
 </div>
 
@@ -62,22 +62,8 @@ if (isset($_POST["coments"])) {
 <b><p id="noListings">Ľutujeme, žiadne inzeráty na zobrazenie</p></b>
 
 <nav aria-label="Page navigation example">
-    <ul class="pagination justify-content-end">
-        <li id="prev" class="page-item ">
-            <a class="page-link" onclick="plusPages(-1)">Previous</a>
-        </li>
-        <?php
-            $countAds = $storage->countAds("kategoria", $_SESSION["category"])["pocet"];
-            $pages = $countAds/20;
-            if ($countAds%20 != 0){
-                $pages++;
-            }
-            for ($pageNum = 1; $pageNum <= $pages; $pageNum++) {?>
-                <li id="page<?php echo $pageNum?>" class="page-item"><a class="page-link" onclick="goToPage(<?php echo $pageNum?>)"><?php echo $pageNum?></a></li>
-        <?php }?>
-        <li id="next" class="page-item">
-            <a class="page-link" onclick="plusPages(1)">Next</a>
-        </li>
+    <ul id="paginationNav" class="pagination justify-content-end">
+<!--        tu sa nacitava pagination navigation-->
     </ul>
 </nav>
 
@@ -86,8 +72,8 @@ if (isset($_POST["coments"])) {
 <script src="js/bootstrap.js"></script>
 <script src="js/script.js"></script>
 <script>
-    initPages(<?php echo intval($pages)?>);
-    goToPage(1);
+    loadPaginationNav();
+    loadListingsPage();
 </script>
 </body>
 </html>

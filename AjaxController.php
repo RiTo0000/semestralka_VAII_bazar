@@ -14,5 +14,4 @@ require "DBStorage.php";
             break;
     }
 
-
 ?>

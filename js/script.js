@@ -149,109 +149,32 @@ function showSlides(n) {
     dots[slideIndex-1].className += " active";
 }
 
+var filterTxt = "";
+var filterMinPrice = "";
+var filterMaxPrice = "";
+
 function filter() {
-    let tableRows = document.getElementsByClassName("tableRows");
-    let input;
-    let str1;
-    let str2;
-    let search;
-    let count = 0;
-    for (let i = 0; i < tableRows.length; i++) {
-        input = tableRows[i].cells.item(1).innerHTML;
-        str1 = input.substring(input.indexOf("('")+2, input.indexOf("',"));
-        str2 = input.substring(input.indexOf("',", input.indexOf("',") + 1) + 4, input.indexOf("',", input.indexOf("',", input.indexOf("',") + 1) + 1));
-        search = str1 + ' ' + str2;
-
-        if (search.toLowerCase().includes(((document.getElementById("search").value).toLowerCase()).trim())) {
-            if (filterPrice(tableRows[i].cells.item(2).innerHTML)) {
-                tableRows[i].removeAttribute("hidden");
-                count++;
-            }
-            else {
-                tableRows[i].setAttribute("hidden", "hidden");
-            }
-        }
-        else {
-            tableRows[i].setAttribute("hidden", "hidden");
-        }
-    }
-    if (count === 0) {
-        document.getElementById("noListings").style.display = "initial";
-    }
-    else {
-        document.getElementById("noListings").style.display = "none";
-    }
-
-}
-
-function filterPrice(pPrice) { //return true ked ma byt zobrazeny a false ak ma byt schovany
-    let price;
-    price = pPrice.substring(0, pPrice.indexOf("€"));
-
-    if (document.getElementById("priceFrom").value.trim().length === 0 && document.getElementById("priceTo").value.trim().length === 0) {
-        return true;
-    }
-    else if (document.getElementById("priceFrom").value.trim().length === 0) {
-        if (parseFloat(price) <= document.getElementById("priceTo").value) {
-            return true;
-        }
-        else {
-            return false;
-        }
-    }
-    else if (document.getElementById("priceTo").value.trim().length === 0) {
-        if (parseFloat(price) >= document.getElementById("priceFrom").value) {
-            return true;
-        }
-        else {
-            return false;
-        }
-    }
-    else {
-        if (parseFloat(price) >= document.getElementById("priceFrom").value && parseFloat(price) <= document.getElementById("priceTo").value) {
-            return true;
-        }
-        else {
-            return false;
-        }
-    }
-}
-
-function filterDB() {
-    let filterTxt = document.getElementById("search").value;
-    let minPrice = document.getElementById("priceFrom").value;
-    let maxPrice = document.getElementById("priceTo").value;
-    loadListingsPage(filterTxt, maxPrice, minPrice);
+    pageNumber = 1;
+    filterTxt = document.getElementById("search").value;
+    filterMinPrice = document.getElementById("priceFrom").value;
+    filterMaxPrice = document.getElementById("priceTo").value;
+    loadListingsPage();
+    loadPaginationNav();
 }
 
 //pagination
-var pageNumber;
+var pageNumber = 1;
 var totalPages;
 
 function goToPage(pageNum) {
-    if (pageNum != pageNumber) {
+    if (pageNum !== pageNumber) {
         pageNumber = pageNum;
-        for (let x = 1; x <= totalPages; x++){
-            document.getElementById("page"+x).classList.remove("active");
-        }
-        document.getElementById("page"+pageNumber).classList.add("active");
-        if (pageNum == 1){
-            document.getElementById("prev").classList.add("disabled");
-        }
-        else {
-            document.getElementById("prev").classList.remove("disabled");
-        }
-        if (pageNum == totalPages){
-            document.getElementById("next").classList.add("disabled");
-        }
-        else {
-            document.getElementById("next").classList.remove("disabled");
-        }
-        loadListingsPage("","","");
+        stylePaginationNav();
+        loadListingsPage();
     }
 }
 
-function loadListingsPage(filterTxt, filterMaxPrice, filterMinPrice) {
+function loadListingsPage() { //nacitanie jednej strany inzeratov podla page number
     const xhttpAds = new XMLHttpRequest();
     xhttpAds.onload = function() {
         let listingsTable = this.response;
@@ -269,16 +192,51 @@ function loadListingsPage(filterTxt, filterMaxPrice, filterMinPrice) {
     }
     xhttpAds.open("GET", "listings.php?pageNum="+pageNumber+"&filterTxt="+filterTxt+"&filterMinPrice="+filterMinPrice+"&filterMaxPrice="+filterMaxPrice);
     xhttpAds.send();
+
 }
 
-function plusPages(plusNum) {
+function stylePaginationNav() {
+    for (let x = 1; x <= totalPages; x++){
+        document.getElementById("page"+x).classList.remove("active");
+    }
+    document.getElementById("page"+pageNumber).classList.add("active");
+    if (pageNumber === 1){
+        document.getElementById("prev").classList.add("disabled");
+    }
+    else {
+        document.getElementById("prev").classList.remove("disabled");
+    }
+    if (pageNumber === totalPages){
+        document.getElementById("next").classList.add("disabled");
+    }
+    else {
+        document.getElementById("next").classList.remove("disabled");
+    }
+}
+
+function loadPaginationNav() { //nacitanie navigacie pre pagination
+    const xhttpPagNav = new XMLHttpRequest();
+    xhttpPagNav.onload = function() {
+        let response = this.responseText;
+        let cutIndex = response.indexOf(';');
+        totalPages = parseInt(response.substring(0, cutIndex));
+        cutIndex++;
+        let paginationNav = response.substring(cutIndex);
+
+        document.getElementById("paginationNav").innerHTML = paginationNav;
+
+        stylePaginationNav(); //nastajlovanie pagination navigacie podla toho na akej strane som a co vyhladavam
+    }
+    xhttpPagNav.open("GET", "pagination.inc.php?filterTxt="+filterTxt+"&filterMinPrice="+filterMinPrice+"&filterMaxPrice="+filterMaxPrice);
+    xhttpPagNav.send();
+}
+
+function plusPages(plusNum) { //sice pise ze sa nikde nepouziva ale pouziva sa v subore pagination.inc.php
     let newPageNum = pageNumber + plusNum;
     goToPage(newPageNum);
 }
 
-function initPages(pages) {
-    totalPages = pages;
-}
+
 
 
 

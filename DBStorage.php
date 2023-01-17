@@ -145,6 +145,7 @@ class DBStorage
             $filterMaxPrice = 1.7976931348623157E+308;
         }
         $offset = ($pageNum - 1) * 20;
+
         $stmt = $this->conn->prepare("SELECT * FROM inzeraty where $colName=? and ( title like ? or popis like ? ) and cena >= ? and cena <= ? limit 20 offset $offset");
         $stmt->bindParam(1, $colValue);
         $stmt->bindParam(2, $filterTitlePopis);
@@ -156,10 +157,18 @@ class DBStorage
         return $stmt;
     }
 
-    public function countAds($colName, $colValue) {
+    public function countAds($colName, $colValue, $filterTxt, $filterMinPrice, $filterMaxPrice) {
+        $filterTitlePopis = "%".$filterTxt."%";
+        if ($filterMaxPrice == null) {
+            $filterMaxPrice = 1.7976931348623157E+308;
+        }
 
-        $stmt = $this->conn->prepare("SELECT COUNT(*) as pocet FROM inzeraty where $colName=?;");
+        $stmt = $this->conn->prepare("SELECT COUNT(*) as pocet FROM inzeraty where $colName=? and ( title like ? or popis like ? ) and cena >= ? and cena <= ?");
         $stmt->bindParam(1, $colValue);
+        $stmt->bindParam(2, $filterTitlePopis);
+        $stmt->bindParam(3, $filterTitlePopis);
+        $stmt->bindParam(4, $filterMinPrice);
+        $stmt->bindParam(5, $filterMaxPrice);
         $stmt->execute();
 
         return $stmt->fetch();
