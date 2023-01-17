@@ -1,9 +1,9 @@
 <?php
 require "DBStorage.php";
-require "AuthControler.php";
 require "Auth.php";
 
 $storage = new DBStorage();
+session_start();
 
 if(isset($_POST["login"])) {
     if (!$storage->findUser($_POST["login"], $_POST["password"])) {

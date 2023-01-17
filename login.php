@@ -1,7 +1,6 @@
 <?php
 
 require "DBStorage.php";
-require "AuthControler.php";
 require "Auth.php";
 
 $storage = new DBStorage();

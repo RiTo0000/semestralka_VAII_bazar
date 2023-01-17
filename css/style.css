@@ -325,7 +325,7 @@ table {
  .filter {
      margin-left: 2%;
      display: inline-block;
-     width: 20%;
+     width: 30%;
  }
 
 
@@ -344,6 +344,11 @@ table {
 
 #noListings, #noComents, #notLoggedIn {
     margin-left: 10%;
+    font-weight: bold;
+}
+
+#kategoria {
+    font-weight: bold;
 }
 
 #mailAndComents {

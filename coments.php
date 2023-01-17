@@ -36,7 +36,7 @@ session_start();
     </form>
 </div>
 <?php }?>
-<b><p>Recenzie pre užívateľa: <?php echo $_SESSION["user"]?></p></b>
+<p><b>Recenzie pre užívateľa: <?php echo $_SESSION["user"]?></b></p>
 <table class="table">
     <thead>
     <tr>
@@ -46,12 +46,10 @@ session_start();
     </tr>
     </thead>
     <tbody>
-    <?php foreach ($storage->readAllComents("userTo", $_SESSION["user"]) as $row) {?>
-        <style>
-            #noComents {
-                display: none;
-            }
-        </style>
+    <?php
+    $noComments = true;
+    foreach ($storage->readAllComents("userTo", $_SESSION["user"]) as $row) {
+        $noComments = false;?>
         <tr class="tableRows">
             <td class="userFrom"><?php echo $row["userFrom"]?></td>
             <td class="comentText"><?php echo $row["comentText"]?></td>
@@ -65,13 +63,20 @@ session_start();
 
     </tbody>
 </table>
-
-<b><p id="noComents">Ľutujeme, žiadne recenzie na zobrazenie</p></b>
-
 <?php
+if ($noComments){
+    echo '<p id="noComents">Ľutujeme, žiadne recenzie na zobrazenie</p>';
+}
+
 if(isset($_POST["addComent"])) {
-    $storage->createComent($_SESSION["name"], $_SESSION["user"], $_POST["comentText"]);
-    header("Refresh:0");
+    if (strlen($_POST["comentText"]) > 500) {
+        echo "<p class='errorMsg'>Zadaný komentár je príliš dlhý</p>";
+        exit();
+    }
+    else {
+        $storage->createComent($_SESSION["name"], $_SESSION["user"], $_POST["comentText"]);
+        header("Refresh:0");
+    }
 }
 if (isset($_GET["delete"])) {
     $storage->deleteComent($_GET["delete"]);

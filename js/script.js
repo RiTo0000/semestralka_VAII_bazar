@@ -190,7 +190,7 @@ function loadListingsPage() { //nacitanie jednej strany inzeratov podla page num
             })
         })
     }
-    xhttpAds.open("GET", "listings.php?pageNum="+pageNumber+"&filterTxt="+filterTxt+"&filterMinPrice="+filterMinPrice+"&filterMaxPrice="+filterMaxPrice);
+    xhttpAds.open("GET", "listings.inc.php?pageNum="+pageNumber+"&filterTxt="+filterTxt+"&filterMinPrice="+filterMinPrice+"&filterMaxPrice="+filterMaxPrice);
     xhttpAds.send();
 
 }
@@ -220,6 +220,9 @@ function loadPaginationNav() { //nacitanie navigacie pre pagination
         let response = this.responseText;
         let cutIndex = response.indexOf(';');
         totalPages = parseInt(response.substring(0, cutIndex));
+        if (totalPages !== 0) {
+            document.getElementById("noListings").style.display = "none";
+        }
         cutIndex++;
         let paginationNav = response.substring(cutIndex);
 

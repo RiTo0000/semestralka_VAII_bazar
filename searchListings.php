@@ -33,16 +33,16 @@ if (isset($_POST["coments"])) {
 <!--filter-->
 <div id="filter">
     <div class="filter">
-        <label class="col-sm-2 col-form-label filterLabel">Hľadaný výraz: </label>
+        <label class="col-md-2 col-form-label filterLabel">Hľadaný výraz: </label>
         <input type="text" class="form-control" id="search" onkeyup="filter()">
     </div>
     <div class="filter">
-        <label class="col-sm-2 col-form-label filterLabel">Cena od: </label>
+        <label class="col-sm-2 col-form-label filterLabel">Cena od(€): </label>
         <input type="number" min="0" step="0.01" class="form-control" id="priceFrom" onkeyup="filter()">
     </div>
     <div class="filter">
-        <label class="col-sm-2 col-form-label filterLabel">Cena do: </label>
-        <input type="number" class="form-control" id="priceTo" onkeyup="filter()">
+        <label class="col-sm-2 col-form-label filterLabel">Cena do(€): </label>
+        <input type="number" min="0" step="0.01" class="form-control" id="priceTo" onkeyup="filter()">
     </div>
 </div>
 
@@ -59,7 +59,7 @@ if (isset($_POST["coments"])) {
     </tbody>
 </table>
 
-<b><p id="noListings">Ľutujeme, žiadne inzeráty na zobrazenie</p></b>
+<p id="noListings">Ľutujeme, žiadne inzeráty na zobrazenie</p>
 
 <nav aria-label="Page navigation example">
     <ul id="paginationNav" class="pagination justify-content-end">

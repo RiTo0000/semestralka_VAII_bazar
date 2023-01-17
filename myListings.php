@@ -65,14 +65,12 @@ if (isset($_GET["updateAd"])) {
     </tr>
     </thead>
     <tbody>
-    <?php foreach ($storage->readAllAds("userEmail", $_SESSION["name"]) as $row) {?>
-        <style>
-            #noListings {
-                display: none;
-            }
-        </style>
+    <?php
+    $noAds = true;
+    foreach ( $storage->readAllAds("userEmail", $_SESSION["name"]) as $row) {
+        $noAds = false;?>
         <tr class="tableRows">
-            <td><img class="imagePrew" src="<?php echo $storage->readFirstImage($row["id"]);?>" ></td>
+            <td><img class="imagePrew" src="<?php echo $storage->readFirstImage($row["id"]);?>" alt=""></td>
             <td class="popisInOutput"><div><b><a data-modal-target="#model" onclick="setModal('<?php echo $row["id"]?>')"><?php echo $row["title"]?></a></b></div>
             <div><?php echo $row["popis"]?></div></td>
             <td class="priceInOutput"><?php echo $row["cena"]?> €</td>
@@ -83,8 +81,11 @@ if (isset($_GET["updateAd"])) {
 
     </tbody>
 </table>
-
-<b><p id="noListings">Ľutujeme, žiadne inzeráty na zobrazenie</p></b>
+<?php
+    if ($noAds) {
+        echo '<p id="noListings">Ľutujeme, žiadne inzeráty na zobrazenie</p>';
+    }
+?>
 
 <?php include 'detail.php'?>
 <!--zaciatok upravy-->
@@ -103,19 +104,19 @@ if (isset($_GET["updateAd"])) {
                     </div>
                 </div>
                 <div class="row mb-3">
-                    <label for="nadpis" class="col-sm-2 col-form-label">Nadpis</label>
+                    <label for="nadpisUpdate" class="col-sm-2 col-form-label">Nadpis</label>
                     <div class="col-sm-10">
                         <input type="text" class="form-control" id="nadpisUpdate" name="nadpisUpdate" required="required">
                     </div>
                 </div>
                 <div class="row mb-3">
-                    <label for="popis" class="col-sm-2 col-form-label">Popis produktu</label>
+                    <label for="popisUpdate" class="col-sm-2 col-form-label">Popis produktu</label>
                     <div class="col-sm-10">
                         <textarea class="form-control" id="popisUpdate" name="popisUpdate" required="required" maxlength="500"></textarea>
                     </div>
                 </div>
                 <div class="row mb-3">
-                    <label for="cena" class="col-sm-2 col-form-label">Cena (€)</label>
+                    <label for="cenaUpdate" class="col-sm-2 col-form-label">Cena (€)</label>
                     <div class="col-sm-10">
                         <input type="number" min="0" step="0.01" class="form-control" id="cenaUpdate" name="cenaUpdate" required="required">
                     </div>
@@ -125,7 +126,7 @@ if (isset($_GET["updateAd"])) {
         </div>
     </div>
 </div>
-<div id="overlay"></div>
+<!--<div id="overlay"></div>-->
 
 <script src="js/bootstrap.js"></script>
 <script src="js/script.js"></script>
