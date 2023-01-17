@@ -99,7 +99,7 @@ session_start();
                 <label for="cena" class="col-sm-2 col-form-label">Cena (€)</label>
                 <div class="col-sm-10">
                     <?php
-                    if (isset($_GET["ad"])) {
+                    if (isset($_GET["ad"]) && $_GET["addNewAd"] != "negativePrice") {
                         echo '<input type="number" min="0" step="0.01" class="form-control" id="cena" name="cena" required="required" value="'.$ad["cena"].'">';
                     }
                     else {
@@ -132,6 +132,9 @@ session_start();
         switch ($addNewCheck) {
             case "tooManyImages":
                 echo "<p class='errorMsg'>Pozor môžeš nahrať maximálne 5 obrázkov</p>";
+                exit();
+            case "negativePrice":
+                echo "<p class='errorMsg'>Cena nemôže byť záporná</p>";
                 exit();
             case "userDontExist":
                 echo "<p class='errorMsg'>Užívateľ so zadanou emailovou adresou neexistuje</p>";

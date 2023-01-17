@@ -46,17 +46,7 @@ class DBStorage
         return md5($unhashed);   // konvertuje cez md5
     }
 
-    public function updateUserInfo($origEmail, $pPassword, $name, $surname): bool {
-        $stmt = $this->conn->prepare("SELECT * FROM users where email=?");
-        $stmt->bindParam(1, $origEmail);
-        $stmt->execute();
-
-        $row = $stmt->fetch();
-        $password = $pPassword;
-        if (strcmp($pPassword, $row["password"]) != 0) {
-            $salt = $row["salt"];
-            $password = $this->hashPassword($salt, $pPassword);
-        }
+    public function updateUserInfo($origEmail, $name, $surname): bool {
 
         $stmt2 = $this->conn->prepare("UPDATE users SET meno = :name, priezvisko = :surname where email = :origEmail");
         $stmt2->bindParam(':name', $name);

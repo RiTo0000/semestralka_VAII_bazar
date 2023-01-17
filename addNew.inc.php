@@ -12,7 +12,11 @@ if(isset($_POST["addNewAd"])) {
     $myFile = $_FILES['image'];
     $ad = json_encode($_POST);
     $fileCount = count(array_filter($myFile["name"]));
-    if ($fileCount > 5) {
+    if ($cena < 0){
+        header("Location: ../addNew.php?addNewAd=negativePrice&ad=$ad");
+        exit();
+    }
+    elseif ($fileCount > 5) {
         header("Location: ../addNew.php?addNewAd=tooManyImages&ad=$ad");
         exit();
     }
@@ -22,7 +26,7 @@ if(isset($_POST["addNewAd"])) {
             header("Location: ../addNew.php?addNewAd=userDontExist");
             exit();
         } else {
-            //zaciatok kopcenia
+            //zaciatok kopcenia fotiek
 
             if (isset($_FILES['image'])) {
                 for ($i = 0; $i < $fileCount; $i++) {
@@ -42,7 +46,7 @@ if(isset($_POST["addNewAd"])) {
                 }
             }
 
-            //koniec kopcenia
+            //koniec kopcenia fotiek
 
             header("Location: ../addNew.php?addNewAd=success");
             exit();

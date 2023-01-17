@@ -44,7 +44,7 @@ if (isset($_POST["deleteUser"])) {
                 <div class="row mb-3">
                     <label for="login" class="col-sm-2 col-form-label">Email</label>
                     <div class="col-sm-10">
-                        <input type="email" class="form-control" id="login" required="required" name="login">
+                        <input type="email" class="form-control" id="login" maxlength="319" required="required" name="login">
                     </div>
                 </div>
                 <div class="row mb-3">
@@ -63,10 +63,10 @@ if (isset($_POST["deleteUser"])) {
                     <?php
                     if (isset($_GET["register"]) && isset($_GET["name"])) {
                         $name = $_GET["name"];
-                        echo '<input type="text" class="form-control" id="meno" required="required" name="meno" value="'.$name.'">';
+                        echo '<input type="text" class="form-control" id="meno" required="required" maxlength="30" name="meno" value="'.$name.'">';
                     }
                     else {
-                        echo '<input type="text" class="form-control" id="meno" required="required" name="meno">';
+                        echo '<input type="text" class="form-control" id="meno" required="required" maxlength="30" name="meno">';
                     }
                     ?>
                 </div>
@@ -75,10 +75,10 @@ if (isset($_POST["deleteUser"])) {
                     <?php
                     if (isset($_GET["register"]) && isset($_GET["surname"])) {
                         $surname = $_GET["surname"];
-                        echo '<input type="text" class="form-control" id="priezvisko" required="required" name="priezvisko" value="'.$surname.'">';
+                        echo '<input type="text" class="form-control" id="priezvisko" required="required" maxlength="30" name="priezvisko" value="'.$surname.'">';
                     }
                     else {
-                        echo '<input type="text" class="form-control" id="priezvisko" required="required" name="priezvisko">';
+                        echo '<input type="text" class="form-control" id="priezvisko" required="required" maxlength="30" name="priezvisko">';
                     }
                     ?>
                 </div>
@@ -87,10 +87,10 @@ if (isset($_POST["deleteUser"])) {
                     <?php
                     if (isset($_GET["register"]) && isset($_GET["email"])) {
                         $surname = $_GET["email"];
-                        echo '<input type="email" class="form-control" id="email" name="email" required="required" placeholder="example@gmail.com" value="'.$surname.'">';
+                        echo '<input type="email" class="form-control" id="email" name="email" required="required" maxlength="319" placeholder="example@gmail.com" value="'.$surname.'">';
                     }
                     else {
-                        echo '<input type="email" class="form-control" id="email" name="email" required="required" placeholder="example@gmail.com">';
+                        echo '<input type="email" class="form-control" id="email" name="email" required="required" maxlength="319" placeholder="example@gmail.com">';
                     }
                     ?>
                 </div>
@@ -120,25 +120,19 @@ if (isset($_POST["deleteUser"])) {
         <div class="row mb-3">
             <label for="inputName" class="col-sm-2 col-form-label">Meno</label>
             <div class="col-sm-10">
-                <input type="text" class="form-control" id="inputName" name="meno" required="required" value="<?php echo $logonUser["meno"]?>">
+                <input type="text" class="form-control" id="inputName" name="meno" maxlength="30" required="required" value="<?php echo $logonUser["meno"]?>">
             </div>
         </div>
         <div class="row mb-3">
             <label for="inputSurname" class="col-sm-2 col-form-label">Priezvisko</label>
             <div class="col-sm-10">
-                <input type="text" class="form-control" id="inputSurname" name="priezvisko" required="required" value="<?php echo $logonUser["priezvisko"]?>">
+                <input type="text" class="form-control" id="inputSurname" name="priezvisko" maxlength="30" required="required" value="<?php echo $logonUser["priezvisko"]?>">
             </div>
         </div>
         <div class="row mb-3">
             <label for="inputEmail3" class="col-sm-2 col-form-label">Email</label>
             <div class="col-sm-10">
                 <input type="email" class="form-control" id="inputEmail3" name="email" required="required" readonly value="<?php echo $logonUser["email"]?>">
-            </div>
-        </div>
-        <div class="row mb-3">
-            <label for="inputPassword3" class="col-sm-2 col-form-label">Password</label>
-            <div class="col-sm-10">
-                <input type="password" class="form-control" id="inputPassword3" name="password" required="required" value="<?php echo $logonUser["password"]?>">
             </div>
         </div>
         <button type="submit" id="btnUpdateInfo" class="btn btn-primary" name="updateUserInfo">Aktualizovať</button>
@@ -163,6 +157,12 @@ elseif (isset($_GET["updateUser"])) {
         case "genError":
             echo "<p class='errorMsg'>Pri úprave používateľského konta nastala chyba</p>";
             exit();
+        case "nameTooLong":
+            echo "<p class='errorMsg'>Meno je príliš dlhé</p>";
+            exit();
+        case "surnameTooLong":
+            echo "<p class='errorMsg'>Priezvisko je príliš dlhé</p>";
+            exit();
         case "success":
             echo "<p class='successMsg'>Úprava používateľského konta prebehla úspešne</p>";
             exit();
@@ -173,6 +173,12 @@ elseif (isset($_GET["register"])) {
     switch ($register) {
         case "passwordsUnequal":
             echo "<p class='errorMsg'>Zadané heslá sa nezhodujú</p>";
+            exit();
+        case "nameTooLong":
+            echo "<p class='errorMsg'>Meno je príliš dlhé</p>";
+            exit();
+        case "surnameTooLong":
+            echo "<p class='errorMsg'>Priezvisko je príliš dlhé</p>";
             exit();
         case "invalidEmail":
             echo "<p class='errorMsg'>Zadaná e-mailová adresa nie je platná</p>";
